@@ -7,18 +7,15 @@
  *	Licensed under MIT
  *
  */
-
+'use strict';
 (function($, undefined) {
 
 	var Carousel = (function() {
 		function Carousel(options, el) {
-			var base = this;
-			base.options = $.extend({}, $.fn.owlCarousel.options, options);
-			base.userOptions = options;
-			var elem = el;
-			var $elem = $(el);
-			base.$elem = $elem;
-			base.loadContent();
+			this.$elem = $(el);
+			this.options = $.extend({}, $.fn.owlCarousel.options, options);
+			this.userOptions = options;
+			this.loadContent();
 		}
 
 		Carousel.prototype.loadContent = function() {
@@ -29,9 +26,7 @@
 			}
 
 			if (typeof base.options.jsonPath === "string") {
-				var url = base.options.jsonPath;
-
-				$.getJSON(url, function(data) {
+				$.getJSON(base.options.jsonPath).done(function(data) {
 					if (typeof base.options.jsonSuccess === "function") {
 						base.options.jsonSuccess.call(this, data);
 					} else {
@@ -164,7 +159,7 @@
 			base.checkVisible = setInterval(function() {
 				if (base.$elem.is(":visible")) {
 					base.reload();
-					base.$elem.animate({opacity: 1},200);
+					base.$elem.animate({opacity: 1}, 200);
 					clearInterval(base.checkVisible);
 				}
 			}, 500);
@@ -259,7 +254,7 @@
 					smallDelay = setTimeout(function() {
 						lastWindowWidth = $(window).width();
 						base.updateVars();
-					},base.options.responsiveRefreshRate);
+					}, base.options.responsiveRefreshRate);
 				}
 			};
 			$(window).resize(base.resizer);
@@ -683,7 +678,7 @@
 			clearInterval(base.autoPlayInterval);
 			base.autoPlayInterval = setInterval(function() {
 				base.next(true);
-			},base.options.autoPlay);
+			}, base.options.autoPlay);
 		};
 
 		Carousel.prototype.swapSpeed = function(action) {
@@ -1092,7 +1087,7 @@
 					follow = true;
 				}
 				if (follow && itemNumber < base.currentItem + base.options.items && $lazyImg.length) {
-					base.lazyPreload($item,$lazyImg);
+					base.lazyPreload($item, $lazyImg);
 				}
 			}
 		};
@@ -1147,11 +1142,11 @@
 
 			function addHeight() {
 				var $currentItem = $(base.$owlItems[base.currentItem]).height();
-				base.wrapperOuter.css("height", $currentItem+"px");
+				base.wrapperOuter.css("height", $currentItem + "px");
 				if (!base.wrapperOuter.hasClass("autoHeight")) {
 					setTimeout(function() {
 						base.wrapperOuter.addClass("autoHeight");
-					},0);
+					}, 0);
 				}
 			}
 		};
@@ -1190,14 +1185,14 @@
 				$currentItem = base.$owlItems.eq(base.currentItem),
 				$prevItem = base.$owlItems.eq(base.prevItem),
 				prevPos = Math.abs(base.positionsInArray[base.currentItem]) + base.positionsInArray[base.prevItem],
-				origin = Math.abs(base.positionsInArray[base.currentItem])+base.itemWidth/2;
+				origin = Math.abs(base.positionsInArray[base.currentItem]) + base.itemWidth / 2;
 
 			base.$owlWrapper
 				.addClass('owl-origin')
 				.css({
-					"-webkit-transform-origin": origin+"px",
-					"-moz-perspective-origin": origin+"px",
-					"perspective-origin": origin+"px"
+					"-webkit-transform-origin": origin + "px",
+					"-moz-perspective-origin": origin + "px",
+					"perspective-origin": origin + "px"
 				});
 			function transStyles(prevPos, zindex) {
 				return {
