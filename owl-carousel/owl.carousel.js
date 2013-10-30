@@ -336,48 +336,45 @@
 		};
 
 		Carousel.prototype.loops = function() {
-			var base = this;
-
-			base.positionsInArray = [0];
+			this.positionsInArray = [0];
 			var elWidth = 0;
 
-			for (var i=0; i < base.itemsAmount; i++) {
-				elWidth += base.itemWidth;
-				base.positionsInArray.push(-elWidth);
+			for (var i=0; i < this.itemsAmount; i++) {
+				elWidth += this.itemWidth;
+				this.positionsInArray.push(-elWidth);
 			}
 		};
 
 		Carousel.prototype.buildControls = function() {
-			var base = this;
-			if (base.options.navigation === true || base.options.pagination === true) {
-				base.owlControls = $("<div class=\"owl-controls\"/>").toggleClass("clickable", !base.browser.isTouch).appendTo(base.$elem);
+			if (this.options.navigation === true || this.options.pagination === true) {
+				this.owlControls = $("<div class=\"owl-controls\"/>").toggleClass("clickable", !this.browser.isTouch).appendTo(this.$elem);
 			}
-			if (base.options.pagination === true) {
-				base.buildPagination();
+			if (this.options.pagination === true) {
+				this.buildPagination();
 			}
-			if (base.options.navigation === true) {
-				base.buildButtons();
+			if (this.options.navigation === true) {
+				this.buildButtons();
 			}
 		};
 
 		Carousel.prototype.buildButtons = function() {
 			var base = this;
 			var buttonsWrapper = $("<div class=\"owl-buttons\"/>");
-			base.owlControls.append(buttonsWrapper);
+			this.owlControls.append(buttonsWrapper);
 
-			base.buttonPrev = $("<div/>", {
+			this.buttonPrev = $("<div/>", {
 				"class": "owl-prev",
-				"html": base.options.navigationText[0] || ""
+				"html": this.options.navigationText[0] || ""
 			});
 
-			base.buttonNext = $("<div/>", {
+			this.buttonNext = $("<div/>", {
 				"class": "owl-next",
-				"html": base.options.navigationText[1] || ""
+				"html": this.options.navigationText[1] || ""
 			});
 
 			buttonsWrapper
-			.append(base.buttonPrev)
-			.append(base.buttonNext);
+			.append(this.buttonPrev)
+			.append(this.buttonNext);
 
 			buttonsWrapper.on("touchend.owlControls mouseup.owlControls", "div[class^=\"owl\"]", function(event) {
 				event.preventDefault();
@@ -392,10 +389,10 @@
 		Carousel.prototype.buildPagination = function() {
 			var base = this;
 
-			base.paginationWrapper = $("<div class=\"owl-pagination\"/>");
-			base.owlControls.append(base.paginationWrapper);
+			this.paginationWrapper = $("<div class=\"owl-pagination\"/>");
+			this.owlControls.append(this.paginationWrapper);
 
-			base.paginationWrapper.on("touchend.owlControls mouseup.owlControls", ".owl-page", function(event) {
+			this.paginationWrapper.on("touchend.owlControls mouseup.owlControls", ".owl-page", function(event) {
 				event.preventDefault();
 				if (Number($(this).data("owl-page")) !== base.currentItem) {
 					base.goTo(Number($(this).data("owl-page")), true);
@@ -404,46 +401,45 @@
 		};
 
 		Carousel.prototype.updatePagination = function() {
-			var base = this;
-			if (base.options.pagination === false) {
+			if (this.options.pagination === false) {
 				return false;
 			}
 
-			base.paginationWrapper.html("");
+			this.paginationWrapper.html("");
 
 			var counter = 0,
 				lastItem,
-				lastPage = base.itemsAmount - base.itemsAmount % base.options.items;
+				lastPage = this.itemsAmount - this.itemsAmount % this.options.items;
 
-			for (var i = 0; i<base.itemsAmount; i++) {
-				if (i % base.options.items === 0) {
-					counter +=1;
+			for (var i=0; i < this.itemsAmount; i++) {
+				if (i % this.options.items === 0) {
+					counter += 1;
 					if (lastPage === i) {
-						lastItem = base.itemsAmount - base.options.items;
+						lastItem = this.itemsAmount - this.options.items;
 					}
 					var paginationButton = $("<div/>", {
 						"class": "owl-page"
 					});
 					var paginationButtonInner = $("<span></span>", {
-						"text": base.options.paginationNumbers === true ? counter : "",
-						"class": base.options.paginationNumbers === true ? "owl-numbers" : ""
+						"text": this.options.paginationNumbers === true ? counter : "",
+						"class": this.options.paginationNumbers === true ? "owl-numbers" : ""
 					});
 					paginationButton.append(paginationButtonInner);
 
 					paginationButton.data("owl-page", lastPage === i ? lastItem : i);
 					paginationButton.data("owl-roundPages", counter);
 
-					base.paginationWrapper.append(paginationButton);
+					this.paginationWrapper.append(paginationButton);
 				}
 			}
-			base.checkPagination();
+			this.checkPagination();
 		};
 		Carousel.prototype.checkPagination = function() {
 			var base = this;
-			if (base.options.pagination === false) {
+			if (this.options.pagination === false) {
 				return false;
 			}
-			base.paginationWrapper.find(".owl-page").each(function() {
+			this.paginationWrapper.find(".owl-page").each(function() {
 				if ($(this).data("owl-roundPages") === $(base.$owlItems[base.currentItem]).data("owl-roundPages")) {
 					base.paginationWrapper
 						.find(".owl-page")
@@ -454,236 +450,220 @@
 		};
 
 		Carousel.prototype.checkNavigation = function() {
-			var base = this;
-
-			if (base.options.navigation === false) {
+			if (this.options.navigation === false) {
 				return false;
 			}
-			if (base.options.rewindNav === false) {
-				if (base.currentItem === 0 && base.maximumItem === 0) {
-					base.buttonPrev.addClass("disabled");
-					base.buttonNext.addClass("disabled");
-				} else if (base.currentItem === 0 && base.maximumItem !== 0) {
-					base.buttonPrev.addClass("disabled");
-					base.buttonNext.removeClass("disabled");
-				} else if (base.currentItem === base.maximumItem) {
-					base.buttonPrev.removeClass("disabled");
-					base.buttonNext.addClass("disabled");
-				} else if (base.currentItem !== 0 && base.currentItem !== base.maximumItem) {
-					base.buttonPrev.removeClass("disabled");
-					base.buttonNext.removeClass("disabled");
+			if (this.options.rewindNav === false) {
+				if (this.currentItem === 0 && this.maximumItem === 0) {
+					this.buttonPrev.addClass("disabled");
+					this.buttonNext.addClass("disabled");
+				} else if (this.currentItem === 0 && this.maximumItem !== 0) {
+					this.buttonPrev.addClass("disabled");
+					this.buttonNext.removeClass("disabled");
+				} else if (this.currentItem === this.maximumItem) {
+					this.buttonPrev.removeClass("disabled");
+					this.buttonNext.addClass("disabled");
+				} else if (this.currentItem !== 0 && this.currentItem !== this.maximumItem) {
+					this.buttonPrev.removeClass("disabled");
+					this.buttonNext.removeClass("disabled");
 				}
 			}
 		};
 
 		Carousel.prototype.updateControls = function() {
-			var base = this;
-			base.updatePagination();
-			base.checkNavigation();
-			if (base.owlControls) {
-				if (base.options.items >= base.itemsAmount) {
-					base.owlControls.hide();
+			this.updatePagination();
+			this.checkNavigation();
+			if (this.owlControls) {
+				if (this.options.items >= this.itemsAmount) {
+					this.owlControls.hide();
 				} else {
-					base.owlControls.show();
+					this.owlControls.show();
 				}
 			}
 		};
 
 		Carousel.prototype.destroyControls = function() {
-			var base = this;
-			if (base.owlControls) {
-				base.owlControls.remove();
+			if (this.owlControls) {
+				this.owlControls.remove();
 			}
 		};
 
 		Carousel.prototype.next = function(speed) {
-			var base = this;
-
-			if (base.isTransition) {
+			if (this.isTransition) {
 				return false;
 			}
 
-			base.storePrevItem = base.currentItem;
+			this.storePrevItem = this.currentItem;
 
-			base.currentItem += base.options.scrollPerPage === true ? base.options.items : 1;
-			if (base.currentItem > base.maximumItem + (base.options.scrollPerPage === true ? (base.options.items - 1) : 0)) {
-				if (base.options.rewindNav === true) {
-					base.currentItem = 0;
+			this.currentItem += this.options.scrollPerPage === true ? this.options.items : 1;
+			if (this.currentItem > this.maximumItem + (this.options.scrollPerPage === true ? (this.options.items - 1) : 0)) {
+				if (this.options.rewindNav === true) {
+					this.currentItem = 0;
 					speed = "rewind";
 				} else {
-					base.currentItem = base.maximumItem;
+					this.currentItem = this.maximumItem;
 					return false;
 				}
 			}
-			base.goTo(base.currentItem, speed);
+			this.goTo(this.currentItem, speed);
 		};
 
 		Carousel.prototype.prev = function(speed) {
-			var base = this;
-
-			if (base.isTransition) {
+			if (this.isTransition) {
 				return false;
 			}
 
-			base.storePrevItem = base.currentItem;
+			this.storePrevItem = this.currentItem;
 
-			if (base.options.scrollPerPage === true && base.currentItem > 0 && base.currentItem < base.options.items) {
-				base.currentItem = 0;
+			if (this.options.scrollPerPage === true && this.currentItem > 0 && this.currentItem < this.options.items) {
+				this.currentItem = 0;
 			} else {
-				base.currentItem -= base.options.scrollPerPage === true ? base.options.items : 1;
+				this.currentItem -= this.options.scrollPerPage === true ? this.options.items : 1;
 			}
-			if (base.currentItem < 0) {
-				if (base.options.rewindNav === true) {
-					base.currentItem = base.maximumItem;
+			if (this.currentItem < 0) {
+				if (this.options.rewindNav === true) {
+					this.currentItem = this.maximumItem;
 					speed = "rewind";
 				} else {
-					base.currentItem = 0;
+					this.currentItem = 0;
 					return false;
 				}
 			}
-			base.goTo(base.currentItem, speed);
+			this.goTo(this.currentItem, speed);
 		};
 
 		Carousel.prototype.goTo = function(position, speed, drag) {
 			var base = this;
 
-			if (base.isTransition) {
+			if (this.isTransition) {
 				return false;
 			}
-			base.getPrevItem();
-			if (typeof base.options.beforeMove === "function") {
-				base.options.beforeMove.call(this, base.$elem);
+			this.getPrevItem();
+			if (typeof this.options.beforeMove === "function") {
+				this.options.beforeMove.call(this, this.$elem);
 			}
-			if (position >= base.maximumItem) {
-				position = base.maximumItem;
+			if (position >= this.maximumItem) {
+				position = this.maximumItem;
 			}
 			else if (position <= 0) {
 				position = 0;
 			}
 
-			base.currentItem = base.owl.currentItem = position;
-			if (base.options.transitionStyle !== false && drag !== "drag" && base.options.items === 1 && base.browser.support3d === true) {
-				base.swapSpeed(0);
-				if (base.browser.support3d === true) {
-					base.transition3d(base.positionsInArray[position]);
+			this.currentItem = this.owl.currentItem = position;
+			if (this.options.transitionStyle !== false && drag !== "drag" && this.options.items === 1 && this.browser.support3d === true) {
+				this.swapSpeed(0);
+				if (this.browser.support3d === true) {
+					this.transition3d(this.positionsInArray[position]);
 				} else {
-					base.css2slide(base.positionsInArray[position], 1);
+					this.css2slide(this.positionsInArray[position], 1);
 				}
-				base.singleItemTransition();
-				base.afterGo();
+				this.singleItemTransition();
+				this.afterGo();
 				return false;
 			}
-			var goToPixel = base.positionsInArray[position];
+			var goToPixel = this.positionsInArray[position];
 
-			if (base.browser.support3d === true) {
-				base.isCss3Finish = false;
+			if (this.browser.support3d === true) {
+				this.isCss3Finish = false;
 
 				if (speed === true) {
-					base.swapSpeed("paginationSpeed");
+					this.swapSpeed("paginationSpeed");
 					setTimeout(function() {
 						base.isCss3Finish = true;
-					}, base.options.paginationSpeed);
-
+					}, this.options.paginationSpeed);
 				} else if (speed === "rewind") {
-					base.swapSpeed(base.options.rewindSpeed);
+					this.swapSpeed(this.options.rewindSpeed);
 					setTimeout(function() {
 						base.isCss3Finish = true;
-					}, base.options.rewindSpeed);
-
+					}, this.options.rewindSpeed);
 				} else {
-					base.swapSpeed("slideSpeed");
+					this.swapSpeed("slideSpeed");
 					setTimeout(function() {
 						base.isCss3Finish = true;
-					}, base.options.slideSpeed);
+					}, this.options.slideSpeed);
 				}
-				base.transition3d(goToPixel);
+				this.transition3d(goToPixel);
 			} else {
 				if (speed === true) {
-					base.css2slide(goToPixel, base.options.paginationSpeed);
+					this.css2slide(goToPixel, this.options.paginationSpeed);
 				} else if (speed === "rewind") {
-					base.css2slide(goToPixel, base.options.rewindSpeed);
+					this.css2slide(goToPixel, this.options.rewindSpeed);
 				} else {
-					base.css2slide(goToPixel, base.options.slideSpeed);
+					this.css2slide(goToPixel, this.options.slideSpeed);
 				}
 			}
-			base.afterGo();
+			this.afterGo();
 		};
 
 		Carousel.prototype.getPrevItem = function() {
-			var base = this;
-			base.prevItem = base.owl.prevItem = base.storePrevItem === undefined ? base.currentItem : base.storePrevItem;
-			base.storePrevItem = undefined;
+			this.prevItem = this.owl.prevItem = this.storePrevItem === undefined ? this.currentItem : this.storePrevItem;
+			this.storePrevItem = undefined;
 		};
 
 		Carousel.prototype.jumpTo = function(position) {
-			var base = this;
-			base.getPrevItem();
-			if (typeof base.options.beforeMove === "function") {
-				base.options.beforeMove.call(this, base.$elem);
+			this.getPrevItem();
+			if (typeof this.options.beforeMove === "function") {
+				this.options.beforeMove.call(this, this.$elem);
 			}
-			if (position >= base.maximumItem || position === -1) {
-				position = base.maximumItem;
+			if (position >= this.maximumItem || position === -1) {
+				position = this.maximumItem;
 			}
 			else if (position <= 0) {
 				position = 0;
 			}
-			base.swapSpeed(0);
-			if (base.browser.support3d === true) {
-				base.transition3d(base.positionsInArray[position]);
+			this.swapSpeed(0);
+			if (this.browser.support3d === true) {
+				this.transition3d(this.positionsInArray[position]);
 			} else {
-				base.css2slide(base.positionsInArray[position], 1);
+				this.css2slide(this.positionsInArray[position], 1);
 			}
-			base.currentItem = base.owl.currentItem = position;
-			base.afterGo();
+			this.currentItem = this.owl.currentItem = position;
+			this.afterGo();
 		};
 
 		Carousel.prototype.afterGo = function() {
-			var base = this;
-			base.checkPagination();
-			base.checkNavigation();
-			base.eachMoveUpdate();
+			this.checkPagination();
+			this.checkNavigation();
+			this.eachMoveUpdate();
 
-			if (typeof base.options.afterMove === "function") {
-				base.options.afterMove.call(this, base.$elem);
+			if (typeof this.options.afterMove === "function") {
+				this.options.afterMove.call(this, this.$elem);
 			}
-			if (base.options.autoPlay !== false) {
-				base.checkAp();
+			if (this.options.autoPlay !== false) {
+				this.checkAp();
 			}
 		};
 
 		Carousel.prototype.stop = function() {
-			var base = this;
-			base.apStatus = "stop";
-			clearInterval(base.autoPlayInterval);
+			this.apStatus = "stop";
+			clearInterval(this.autoPlayInterval);
 		};
 
 		Carousel.prototype.checkAp = function() {
-			var base = this;
-			if (base.apStatus !== "stop") {
-				base.play();
+			if (this.apStatus !== "stop") {
+				this.play();
 			}
 		};
 
 		Carousel.prototype.play = function() {
 			var base = this;
-			base.apStatus = "play";
-			if (base.options.autoPlay === false) {
+			this.apStatus = "play";
+			if (this.options.autoPlay === false) {
 				return false;
 			}
-			clearInterval(base.autoPlayInterval);
-			base.autoPlayInterval = setInterval(function() {
+			clearInterval(this.autoPlayInterval);
+			this.autoPlayInterval = setInterval(function() {
 				base.next(true);
-			}, base.options.autoPlay);
+			}, this.options.autoPlay);
 		};
 
 		Carousel.prototype.swapSpeed = function(action) {
-			var base = this;
 			if (action === "slideSpeed") {
-				base.$owlWrapper.css(base.addCssSpeed(base.options.slideSpeed));
+				this.$owlWrapper.css(this.addCssSpeed(this.options.slideSpeed));
 			} else if (action === "paginationSpeed") {
-				base.$owlWrapper.css(base.addCssSpeed(base.options.paginationSpeed));
+				this.$owlWrapper.css(this.addCssSpeed(this.options.paginationSpeed));
 			} else if (typeof action !== "string") {
-				base.$owlWrapper.css(base.addCssSpeed(action));
+				this.$owlWrapper.css(this.addCssSpeed(action));
 			}
 		};
 
@@ -716,23 +696,21 @@
 		};
 
 		Carousel.prototype.transition3d = function(value) {
-			var base = this;
-			base.$owlWrapper.css(base.doTranslate(value));
+			this.$owlWrapper.css(this.doTranslate(value));
 		};
 
 		Carousel.prototype.css2move = function(value) {
-			var base = this;
-			base.$owlWrapper.css({left: value});
+			this.$owlWrapper.css({left: value});
 		};
 
 		Carousel.prototype.css2slide = function(value, speed) {
 			var base = this;
 
-			base.isCssFinish = false;
-			base.$owlWrapper.stop(true, true).animate({
+			this.isCssFinish = false;
+			this.$owlWrapper.stop(true, true).animate({
 				left: value
 			}, {
-				duration: speed || base.options.slideSpeed,
+				duration: speed || this.options.slideSpeed,
 				complete: function() {
 					base.isCssFinish = true;
 				}
@@ -740,8 +718,6 @@
 		};
 
 		Carousel.prototype.checkBrowser = function() {
-			var base = this;
-
 			//Check 3d support
 			var	translate3D = "translate3d(0px, 0px, 0px)",
 				tempElem = document.createElement("div");
@@ -757,39 +733,37 @@
 
 			var isTouch = "ontouchstart" in window || navigator.msMaxTouchPoints;
 
-			base.browser = {
+			this.browser = {
 				support3d: support3d,
 				isTouch: isTouch
 			};
 		};
 
 		Carousel.prototype.moveEvents = function() {
-			var base = this;
-			if (base.options.mouseDrag !== false || base.options.touchDrag !== false) {
-				base.gestures();
-				base.disabledEvents();
+			if (this.options.mouseDrag !== false || this.options.touchDrag !== false) {
+				this.gestures();
+				this.disabledEvents();
 			}
 		};
 
 		Carousel.prototype.eventTypes = function() {
-			var base = this;
 			var types = ["s", "e", "x"];
 
-			base.ev_types = {};
+			this.ev_types = {};
 
-			if (base.options.mouseDrag === true && base.options.touchDrag === true) {
+			if (this.options.mouseDrag === true && this.options.touchDrag === true) {
 				types = [
 					"touchstart.owl mousedown.owl",
 					"touchmove.owl mousemove.owl",
 					"touchend.owl touchcancel.owl mouseup.owl"
 				];
-			} else if (base.options.mouseDrag === false && base.options.touchDrag === true) {
+			} else if (this.options.mouseDrag === false && this.options.touchDrag === true) {
 				types = [
 					"touchstart.owl",
 					"touchmove.owl",
 					"touchend.owl touchcancel.owl"
 				];
-			} else if (base.options.mouseDrag === true && base.options.touchDrag === false) {
+			} else if (this.options.mouseDrag === true && this.options.touchDrag === false) {
 				types = [
 					"mousedown.owl",
 					"mousemove.owl",
@@ -797,17 +771,16 @@
 				];
 			}
 
-			base.ev_types.start = types[0];
-			base.ev_types.move = types[1];
-			base.ev_types.end = types[2];
+			this.ev_types.start = types[0];
+			this.ev_types.move = types[1];
+			this.ev_types.end = types[2];
 		};
 
 		Carousel.prototype.disabledEvents = function() {
-			var base = this;
-			base.$elem.on("dragstart.owl", function(event) {
+			this.$elem.on("dragstart.owl", function(event) {
 				event.preventDefault();
 			});
-			base.$elem.on("mousedown.disableTextSelect", function(e) {
+			this.$elem.on("mousedown.disableTextSelect", function(e) {
 				return $(e.target).is("input, textarea, select, option");
 			});
 		};
@@ -828,7 +801,7 @@
 				targetElement: null
 			};
 
-			base.isCssFinish = true;
+			this.isCssFinish = true;
 
 			function getTouches(event) {
 				if (event.touches) {
@@ -963,27 +936,26 @@
 				}
 				swapEvents("off");
 			}
-			base.$elem.on(base.ev_types.start, ".owl-wrapper", dragStart);
+			this.$elem.on(this.ev_types.start, ".owl-wrapper", dragStart);
 		};
 
 		Carousel.prototype.getNewPosition = function() {
-			var base = this,
-				newPosition = base.improveClosest();
+			var newPosition = this.improveClosest();
 
-			if (newPosition>base.maximumItem) {
-				base.currentItem = base.maximumItem;
-				newPosition  = base.maximumItem;
-			} else if (base.newPosX >=0) {
+			if (newPosition>this.maximumItem) {
+				this.currentItem = this.maximumItem;
+				newPosition  = this.maximumItem;
+			} else if (this.newPosX >=0) {
 				newPosition = 0;
-				base.currentItem = 0;
+				this.currentItem = 0;
 			}
 			return newPosition;
 		};
 
 		Carousel.prototype.improveClosest = function() {
 			var base = this;
-			var array = base.positionsInArray;
-			var goal = base.newPosX;
+			var array = this.positionsInArray;
+			var goal = this.newPosX;
 			var closest = null;
 			$.each(array, function(i, v) {
 				if (goal - (base.itemWidth/20) > array[i+1] && goal - (base.itemWidth / 20) < v && base.moveDirection() === "left") {
@@ -995,54 +967,53 @@
 					base.currentItem = i + 1;
 				}
 			});
-			return base.currentItem;
+			return this.currentItem;
 		};
 
 		Carousel.prototype.moveDirection = function() {
-			var base = this,
-				direction;
-			if (base.newRelativeX < 0) {
+			var direction;
+			if (this.newRelativeX < 0) {
 				direction = "right";
-				base.playDirection = "next";
+				this.playDirection = "next";
 			} else {
 				direction = "left";
-				base.playDirection = "prev";
+				this.playDirection = "prev";
 			}
 			return direction;
 		};
 
 		Carousel.prototype.customEvents = function() {
 			var base = this;
-			base.$elem.on("owl.next", function() {
+			this.$elem.on("owl.next", function() {
 				base.next();
 			});
-			base.$elem.on("owl.prev", function() {
+			this.$elem.on("owl.prev", function() {
 				base.prev();
 			});
-			base.$elem.on("owl.play", function(event, speed) {
+			this.$elem.on("owl.play", function(event, speed) {
 				base.options.autoPlay = speed;
 				base.play();
 				base.hoverStatus = "play";
 			});
-			base.$elem.on("owl.stop", function() {
+			this.$elem.on("owl.stop", function() {
 				base.stop();
 				base.hoverStatus = "stop";
 			});
-			base.$elem.on("owl.goTo", function(event, item) {
+			this.$elem.on("owl.goTo", function(event, item) {
 				base.goTo(item);
 			});
-			base.$elem.on("owl.jumpTo", function(event, item) {
+			this.$elem.on("owl.jumpTo", function(event, item) {
 				base.jumpTo(item);
 			});
 		};
 
 		Carousel.prototype.stopOnHover = function() {
 			var base = this;
-			if (base.options.stopOnHover === true && base.browser.isTouch !== true && base.options.autoPlay !== false) {
-				base.$elem.on("mouseover", function() {
+			if (this.options.stopOnHover === true && this.browser.isTouch !== true && this.options.autoPlay !== false) {
+				this.$elem.on("mouseover", function() {
 					base.stop();
 				});
-				base.$elem.on("mouseout", function() {
+				this.$elem.on("mouseout", function() {
 					if (base.hoverStatus !== "stop") {
 						base.play();
 					}
@@ -1051,13 +1022,11 @@
 		};
 
 		Carousel.prototype.lazyLoad = function() {
-			var base = this;
-
-			if (base.options.lazyLoad === false) {
+			if (this.options.lazyLoad === false) {
 				return false;
 			}
-			for (var i=0; i<base.itemsAmount; i++) {
-				var $item = $(base.$owlItems[i]);
+			for (var i=0; i < this.itemsAmount; i++) {
+				var $item = $(this.$owlItems[i]);
 
 				if ($item.data("owl-loaded") === "loaded") {
 					continue;
@@ -1075,13 +1044,13 @@
 					$lazyImg.hide();
 					$item.addClass("loading").data("owl-loaded", "checked");
 				}
-				if (base.options.lazyFollow === true) {
-					follow = itemNumber >= base.currentItem;
+				if (this.options.lazyFollow === true) {
+					follow = itemNumber >= this.currentItem;
 				} else {
 					follow = true;
 				}
-				if (follow && itemNumber < base.currentItem + base.options.items && $lazyImg.length) {
-					base.lazyPreload($item, $lazyImg);
+				if (follow && itemNumber < this.currentItem + this.options.items && $lazyImg.length) {
+					this.lazyPreload($item, $lazyImg);
 				}
 			}
 		};
@@ -1116,7 +1085,7 @@
 
 		Carousel.prototype.autoHeight = function() {
 			var base = this;
-			var $currentimg = $(base.$owlItems[base.currentItem]).find("img");
+			var $currentimg = $(this.$owlItems[this.currentItem]).find("img");
 
 			if ($currentimg.get(0) !== undefined) {
 				var iterations = 0;
@@ -1157,38 +1126,37 @@
 		};
 
 		Carousel.prototype.addClassActive = function() {
-			var base = this;
-			base.$owlItems.removeClass("active");
-			for (var i=base.currentItem; i < base.currentItem + base.options.items; i++) {
-				$(base.$owlItems[i]).addClass("active");
+			this.$owlItems.removeClass("active");
+			for (var i=this.currentItem; i < this.currentItem + this.options.items; i++) {
+				$(this.$owlItems[i]).addClass("active");
 			}
 		};
 
 		Carousel.prototype.transitionTypes = function(className) {
-			var base = this;
 			//Currently available: "fade", "backSlide", "goDown", "fadeUp"
-			base.outClass = "owl-" + className + "-out";
-			base.inClass = "owl-" + className + "-in";
+			this.outClass = "owl-" + className + "-out";
+			this.inClass = "owl-" + className + "-in";
 		};
 
 		Carousel.prototype.singleItemTransition = function() {
 			var base = this;
-			base.isTransition = true;
+			this.isTransition = true;
 
-			var outClass = base.outClass,
-				inClass = base.inClass,
-				$currentItem = base.$owlItems.eq(base.currentItem),
-				$prevItem = base.$owlItems.eq(base.prevItem),
-				prevPos = Math.abs(base.positionsInArray[base.currentItem]) + base.positionsInArray[base.prevItem],
-				origin = Math.abs(base.positionsInArray[base.currentItem]) + base.itemWidth / 2;
+			var outClass = this.outClass,
+				inClass = this.inClass,
+				$currentItem = this.$owlItems.eq(this.currentItem),
+				$prevItem = this.$owlItems.eq(this.prevItem),
+				prevPos = Math.abs(this.positionsInArray[this.currentItem]) + this.positionsInArray[this.prevItem],
+				origin = Math.abs(this.positionsInArray[this.currentItem]) + this.itemWidth / 2;
 
-			base.$owlWrapper
+			this.$owlWrapper
 				.addClass("owl-origin")
 				.css({
 					"-webkit-transform-origin": origin + "px",
 					"-moz-perspective-origin": origin + "px",
 					"perspective-origin": origin + "px"
 				});
+
 			function transStyles(prevPos) {
 				return {
 					position: "relative",
@@ -1217,104 +1185,96 @@
 		};
 
 		Carousel.prototype.clearTransStyle = function(item, classToRemove) {
-			var base = this;
 			item.css({
 					position: "",
 					left: ""
 				})
 				.removeClass(classToRemove);
-			if (base.endPrev && base.endCurrent) {
-				base.$owlWrapper.removeClass("owl-origin");
-				base.endPrev = false;
-				base.endCurrent = false;
-				base.isTransition = false;
+			if (this.endPrev && this.endCurrent) {
+				this.$owlWrapper.removeClass("owl-origin");
+				this.endPrev = false;
+				this.endCurrent = false;
+				this.isTransition = false;
 			}
 		};
 
 		Carousel.prototype.owlStatus = function() {
-			var base = this;
-			base.owl = {
-				userOptions: base.userOptions,
-				baseElement: base.$elem,
-				userItems: base.$userItems,
-				owlItems: base.$owlItems,
-				currentItem: base.currentItem,
-				prevItem: base.prevItem,
-				isTouch: base.browser.isTouch,
-				browser: base.browser
+			this.owl = {
+				userOptions: this.userOptions,
+				thisElement: this.$elem,
+				userItems: this.$userItems,
+				owlItems: this.$owlItems,
+				currentItem: this.currentItem,
+				prevItem: this.prevItem,
+				isTouch: this.browser.isTouch,
+				browser: this.browser
 			};
 		};
 
 		Carousel.prototype.clearEvents = function() {
-			var base = this;
-			base.$elem.off(".owl owl mousedown.disableTextSelect");
+			this.$elem.off(".owl owl mousedown.disableTextSelect");
 			$(document).off(".owl owl");
-			$(window).off("resize", base.resizer);
+			$(window).off("resize", this.resizer);
 		};
 
 		Carousel.prototype.unWrap = function() {
-			var base = this;
-			if (base.$elem.children().length !== 0) {
-				base.$owlWrapper.unwrap();
-				base.$userItems.unwrap().unwrap();
-				if (base.owlControls) {
-					base.owlControls.remove();
+			if (this.$elem.children().length !== 0) {
+				this.$owlWrapper.unwrap();
+				this.$userItems.unwrap().unwrap();
+				if (this.owlControls) {
+					this.owlControls.remove();
 				}
 			}
-			base.clearEvents();
-			base.$elem
-				.attr("style", base.$elem.data("owl-originalStyles") || "")
-				.attr("class", base.$elem.data("owl-originalClasses"));
+			this.clearEvents();
+			this.$elem
+				.attr("style", this.$elem.data("owl-originalStyles") || "")
+				.attr("class", this.$elem.data("owl-originalClasses"));
 		};
 
 		Carousel.prototype.destroy = function() {
-			var base = this;
-			base.stop();
-			clearInterval(base.checkVisible);
-			base.unWrap();
-			base.$elem.removeData();
+			this.stop();
+			clearInterval(this.checkVisible);
+			this.unWrap();
+			this.$elem.removeData();
 		};
 
 		Carousel.prototype.reinit = function(newOptions) {
-			var base = this;
-			var options = $.extend({}, base.userOptions, newOptions);
-			base.unWrap();
-			base.init(options, base.$elem);
+			var options = $.extend({}, this.userOptions, newOptions);
+			this.unWrap();
+			this.init(options, this.$elem);
 		};
 
 		Carousel.prototype.addItem = function(htmlString, targetPosition) {
-			var base = this,
-				position;
+			var position;
 
 			if (!htmlString) {
 				return false;
 			}
 
-			if (base.$elem.children().length === 0) {
-				base.$elem.append(htmlString);
-				base.setVars();
+			if (this.$elem.children().length === 0) {
+				this.$elem.append(htmlString);
+				this.setVars();
 				return false;
 			}
-			base.unWrap();
+			this.unWrap();
 			if (targetPosition === undefined || targetPosition === -1) {
 				position = -1;
 			} else {
 				position = targetPosition;
 			}
-			if (position >= base.$userItems.length || position === -1) {
-				base.$userItems.eq(-1).after(htmlString);
+			if (position >= this.$userItems.length || position === -1) {
+				this.$userItems.eq(-1).after(htmlString);
 			} else {
-				base.$userItems.eq(position).before(htmlString);
+				this.$userItems.eq(position).before(htmlString);
 			}
 
-			base.setVars();
+			this.setVars();
 		};
 
 		Carousel.prototype.removeItem = function(targetPosition) {
-			var base = this,
-				position;
+			var position;
 
-			if (base.$elem.children().length === 0) {
+			if (this.$elem.children().length === 0) {
 				return false;
 			}
 
@@ -1324,9 +1284,9 @@
 				position = targetPosition;
 			}
 
-			base.unWrap();
-			base.$userItems.eq(position).remove();
-			base.setVars();
+			this.unWrap();
+			this.$userItems.eq(position).remove();
+			this.setVars();
 		};
 
 		return Carousel;
