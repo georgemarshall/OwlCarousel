@@ -1,3 +1,7 @@
+/* jshint browser: true, curly: true, eqeqeq: true, es3: true, freeze: true,
+ indent: 4, jquery: true, quotmark: true, undef: true, unused: true,
+ trailing: true, globalstrict: true */
+
 /*
  *	jQuery OwlCarousel v1.28
  *
@@ -7,7 +11,7 @@
  *	Licensed under MIT
  *
  */
-'use strict';
+"use strict";
 (function($, undefined) {
 
 	var Carousel = (function() {
@@ -46,7 +50,7 @@
 			}
 		};
 
-		Carousel.prototype.logIn = function(action) {
+		Carousel.prototype.logIn = function() {
 			this.$elem.css({opacity: 0});
 			this.orignalItems = this.options.items;
 			this.checkBrowser();
@@ -135,7 +139,7 @@
 			}
 		};
 
-		Carousel.prototype.reload = function(elements) {
+		Carousel.prototype.reload = function() {
 			var base = this;
 			setTimeout(function() {
 				base.updateVars();
@@ -274,6 +278,7 @@
 		};
 
 		Carousel.prototype.appendItemsSizes = function() {
+			var base = this;
 			var roundPages = 0;
 			var lastItem = this.itemsAmount - this.options.items;
 
@@ -438,7 +443,7 @@
 			if (base.options.pagination === false) {
 				return false;
 			}
-			base.paginationWrapper.find(".owl-page").each(function(i, v) {
+			base.paginationWrapper.find(".owl-page").each(function() {
 				if ($(this).data("owl-roundPages") === $(base.$owlItems[base.currentItem]).data("owl-roundPages")) {
 					base.paginationWrapper
 						.find(".owl-page")
@@ -683,7 +688,6 @@
 		};
 
 		Carousel.prototype.addCssSpeed = function(speed) {
-			var base = this;
 			return {
 				"-webkit-transition": "all "+ speed +"ms ease",
 				"-moz-transition": "all "+ speed +"ms ease",
@@ -804,7 +808,7 @@
 				event.preventDefault();
 			});
 			base.$elem.on("mousedown.disableTextSelect", function(e) {
-				return $(e.target).is('input, textarea, select, option');
+				return $(e.target).is("input, textarea, select, option");
 			});
 		};
 
@@ -857,7 +861,7 @@
 				}
 			}
 
-			function dragStart(e) {
+			function dragStart(e) { /* jshint validthis: true */
 				var event = e.originalEvent || e || window.event;
 
 				if (base.isCssFinish === false && !base.options.dragBeforeAnimFinish) {
@@ -892,7 +896,7 @@
 				locals.targetElement = event.target || event.srcElement;
 			}
 
-			function dragMove(e) {
+			function dragMove(e) { /* jshint validthis: true */
 				var event = e.originalEvent || e || window.event;
 
 				base.newPosX = getTouches(event).x- locals.offsetX;
@@ -986,7 +990,7 @@
 					closest = v;
 					base.currentItem = i;
 				}
-				else if (goal + (base.itemWidth/20) < v && goal + (base.itemWidth / 20) > array[i + 1] && base.moveDirection() === "right") {
+				else if (goal + (base.itemWidth / 20) < v && goal + (base.itemWidth / 20) > array[i + 1] && base.moveDirection() === "right") {
 					closest = array[i + 1];
 					base.currentItem = i + 1;
 				}
@@ -1085,8 +1089,9 @@
 		Carousel.prototype.lazyPreload = function($item, $lazyImg) {
 			var base = this,
 				iterations = 0;
-				$lazyImg[0].src = $lazyImg.data("src");
-				checkLazyImage();
+
+			$lazyImg[0].src = $lazyImg.data("src");
+			checkLazyImage();
 
 			function checkLazyImage() {
 				iterations += 1;
@@ -1178,20 +1183,20 @@
 				origin = Math.abs(base.positionsInArray[base.currentItem]) + base.itemWidth / 2;
 
 			base.$owlWrapper
-				.addClass('owl-origin')
+				.addClass("owl-origin")
 				.css({
 					"-webkit-transform-origin": origin + "px",
 					"-moz-perspective-origin": origin + "px",
 					"perspective-origin": origin + "px"
 				});
-			function transStyles(prevPos, zindex) {
+			function transStyles(prevPos) {
 				return {
 					position: "relative",
 					left: prevPos + "px"
 				};
 			}
 
-			var animEnd = 'webkitAnimationEnd oAnimationEnd MSAnimationEnd animationend';
+			var animEnd = "webkitAnimationEnd oAnimationEnd MSAnimationEnd animationend";
 
 			$prevItem
 			.css(transStyles(prevPos, 10))
@@ -1219,7 +1224,7 @@
 				})
 				.removeClass(classToRemove);
 			if (base.endPrev && base.endCurrent) {
-				base.$owlWrapper.removeClass('owl-origin');
+				base.$owlWrapper.removeClass("owl-origin");
 				base.endPrev = false;
 				base.endCurrent = false;
 				base.isTransition = false;
