@@ -8,17 +8,10 @@
  *
  */
 
-if (typeof Object.create !== "function") {
-	Object.create = function(obj) {
-		function F() {}
-		F.prototype = obj;
-		return new F();
-	};
-}
 (function($, undefined) {
 
-	var Carousel = {
-		init:function(options, el) {
+	var Carousel = (function() {
+		function Carousel(options, el) {
 			var base = this;
 			base.options = $.extend({}, $.fn.owlCarousel.options, options);
 			base.userOptions = options;
@@ -26,9 +19,9 @@ if (typeof Object.create !== "function") {
 			var $elem = $(el);
 			base.$elem = $elem;
 			base.loadContent();
-		},
+		}
 
-		loadContent: function() {
+		Carousel.prototype.loadContent = function() {
 			var base = this;
 
 			if (typeof base.options.beforeInit === "function") {
@@ -53,9 +46,9 @@ if (typeof Object.create !== "function") {
 			} else {
 				base.logIn();
 			}
-		},
+		};
 
-		logIn: function(action) {
+		Carousel.prototype.logIn = function(action) {
 			var base = this;
 
 			base.$elem.css({opacity: 0});
@@ -64,9 +57,9 @@ if (typeof Object.create !== "function") {
 			base.wrapperWidth = 0;
 			// base.checkVisible;
 			base.setVars();
-		},
+		};
 
-		setVars: function() {
+		Carousel.prototype.setVars = function() {
 			var base = this;
 			if (base.$elem.children().length === 0) {
 				return false;
@@ -83,9 +76,9 @@ if (typeof Object.create !== "function") {
 			base.currentItem = 0; //Starting Position
 			base.customEvents();
 			base.onStartup();
-		},
+		};
 
-		onStartup: function() {
+		Carousel.prototype.onStartup = function() {
 			var base = this;
 			base.updateItems();
 			base.calculateAll();
@@ -116,9 +109,9 @@ if (typeof Object.create !== "function") {
 			if (typeof base.options.afterInit === "function") {
 				base.options.afterInit.call(this, base.$elem);
 			}
-		},
+		};
 
-		eachMoveUpdate: function() {
+		Carousel.prototype.eachMoveUpdate = function() {
 			var base = this;
 
 			if (base.options.lazyLoad === true) {
@@ -133,9 +126,9 @@ if (typeof Object.create !== "function") {
 			if (typeof base.options.afterAction === "function") {
 				base.options.afterAction.call(this, base.$elem);
 			}
-		},
+		};
 
-		updateVars: function() {
+		Carousel.prototype.updateVars = function() {
 			var base = this;
 			if (typeof base.options.beforeUpdate === "function") {
 				base.options.beforeUpdate.call(this, base.$elem);
@@ -149,16 +142,16 @@ if (typeof Object.create !== "function") {
 			if (typeof base.options.afterUpdate === "function") {
 				base.options.afterUpdate.call(this, base.$elem);
 			}
-		},
+		};
 
-		reload: function(elements) {
+		Carousel.prototype.reload = function(elements) {
 			var base = this;
 			setTimeout(function() {
 				base.updateVars();
 			}, 0);
-		},
+		};
 
-		watchVisibility: function() {
+		Carousel.prototype.watchVisibility = function() {
 			var base = this;
 
 			if (base.$elem.is(":visible") === false) {
@@ -175,17 +168,17 @@ if (typeof Object.create !== "function") {
 					clearInterval(base.checkVisible);
 				}
 			}, 500);
-		},
+		};
 
-		wrapItems: function() {
+		Carousel.prototype.wrapItems = function() {
 			var base = this;
 			base.$userItems.wrapAll("<div class=\"owl-wrapper\">").wrap("<div class=\"owl-item\"></div>");
 			base.$elem.find(".owl-wrapper").wrap("<div class=\"owl-wrapper-outer\">");
 			base.wrapperOuter = base.$elem.find(".owl-wrapper-outer");
 			base.$elem.css("display", "block");
-		},
+		};
 
-		baseClass: function() {
+		Carousel.prototype.baseClass = function() {
 			var base = this;
 			var hasBaseClass = base.$elem.hasClass(base.options.baseClass);
 			var hasThemeClass = base.$elem.hasClass(base.options.theme);
@@ -199,9 +192,9 @@ if (typeof Object.create !== "function") {
 			if (!hasThemeClass) {
 				base.$elem.addClass(base.options.theme);
 			}
-		},
+		};
 
-		updateItems: function() {
+		Carousel.prototype.updateItems = function() {
 			var base = this;
 
 			if (base.options.responsive === false) {
@@ -247,9 +240,9 @@ if (typeof Object.create !== "function") {
 			if (base.options.items > base.itemsAmount) {
 				base.options.items = base.itemsAmount;
 			}
-		},
+		};
 
-		response: function() {
+		Carousel.prototype.response = function() {
 			var base = this,
 				smallDelay;
 			if (base.options.responsive !== true) {
@@ -270,9 +263,9 @@ if (typeof Object.create !== "function") {
 				}
 			};
 			$(window).resize(base.resizer);
-		},
+		};
 
-		updatePosition: function() {
+		Carousel.prototype.updatePosition = function() {
 			var base = this;
 
 			if (base.browser.support3d === true) {
@@ -293,9 +286,9 @@ if (typeof Object.create !== "function") {
 			if (base.options.autoPlay !== false) {
 				base.checkAp();
 			}
-		},
+		};
 
-		appendItemsSizes: function() {
+		Carousel.prototype.appendItemsSizes = function() {
 			var base = this;
 
 			var roundPages = 0;
@@ -313,9 +306,9 @@ if (typeof Object.create !== "function") {
 				}
 				$this.data("owl-roundPages", roundPages);
 			});
-		},
+		};
 
-		appendWrapperSizes: function() {
+		Carousel.prototype.appendWrapperSizes = function() {
 			var base = this;
 			var width = base.$owlItems.length * base.itemWidth;
 
@@ -324,35 +317,35 @@ if (typeof Object.create !== "function") {
 				left: 0
 			});
 			base.appendItemsSizes();
-		},
+		};
 
-		calculateAll: function() {
+		Carousel.prototype.calculateAll = function() {
 			var base = this;
 			base.calculateWidth();
 			base.appendWrapperSizes();
 			base.loops();
 			base.max();
-		},
+		};
 
-		calculateWidth: function() {
+		Carousel.prototype.calculateWidth = function() {
 			var base = this;
 			base.itemWidth = Math.round(base.$elem.width()/base.options.items);
-		},
+		};
 
-		max: function() {
+		Carousel.prototype.max = function() {
 			var base = this;
 			base.maximumItem = base.itemsAmount - base.options.items;
 			var maximum = (base.itemsAmount * base.itemWidth) - base.options.items * base.itemWidth;
 				maximum = maximum * -1;
 			base.maximumPixels = maximum;
 			return maximum;
-		},
+		};
 
-		min: function() {
+		Carousel.prototype.min = function() {
 			return 0;
-		},
+		};
 
-		loops: function() {
+		Carousel.prototype.loops = function() {
 			var base = this;
 
 			base.positionsInArray = [0];
@@ -362,9 +355,9 @@ if (typeof Object.create !== "function") {
 				elWidth += base.itemWidth;
 				base.positionsInArray.push(-elWidth);
 			}
-		},
+		};
 
-		buildControls: function() {
+		Carousel.prototype.buildControls = function() {
 			var base = this;
 			if (base.options.navigation === true || base.options.pagination === true) {
 				base.owlControls = $("<div class=\"owl-controls\"/>").toggleClass("clickable", !base.browser.isTouch).appendTo(base.$elem);
@@ -375,9 +368,9 @@ if (typeof Object.create !== "function") {
 			if (base.options.navigation === true) {
 				base.buildButtons();
 			}
-		},
+		};
 
-		buildButtons: function() {
+		Carousel.prototype.buildButtons = function() {
 			var base = this;
 			var buttonsWrapper = $("<div class=\"owl-buttons\"/>");
 			base.owlControls.append(buttonsWrapper);
@@ -404,9 +397,9 @@ if (typeof Object.create !== "function") {
 					base.prev();
 				}
 			});
-		},
+		};
 
-		buildPagination: function() {
+		Carousel.prototype.buildPagination = function() {
 			var base = this;
 
 			base.paginationWrapper = $("<div class=\"owl-pagination\"/>");
@@ -418,9 +411,9 @@ if (typeof Object.create !== "function") {
 					base.goTo(Number($(this).data("owl-page")), true);
 				}
 			});
-		},
+		};
 
-		updatePagination: function() {
+		Carousel.prototype.updatePagination = function() {
 			var base = this;
 			if (base.options.pagination === false) {
 				return false;
@@ -454,8 +447,8 @@ if (typeof Object.create !== "function") {
 				}
 			}
 			base.checkPagination();
-		},
-		checkPagination: function() {
+		};
+		Carousel.prototype.checkPagination = function() {
 			var base = this;
 			if (base.options.pagination === false) {
 				return false;
@@ -468,9 +461,9 @@ if (typeof Object.create !== "function") {
 					$(this).addClass("active");
 				}
 			});
-		},
+		};
 
-		checkNavigation: function() {
+		Carousel.prototype.checkNavigation = function() {
 			var base = this;
 
 			if (base.options.navigation === false) {
@@ -491,9 +484,9 @@ if (typeof Object.create !== "function") {
 					base.buttonNext.removeClass("disabled");
 				}
 			}
-		},
+		};
 
-		updateControls: function() {
+		Carousel.prototype.updateControls = function() {
 			var base = this;
 			base.updatePagination();
 			base.checkNavigation();
@@ -504,16 +497,16 @@ if (typeof Object.create !== "function") {
 					base.owlControls.show();
 				}
 			}
-		},
+		};
 
-		destroyControls: function() {
+		Carousel.prototype.destroyControls = function() {
 			var base = this;
 			if (base.owlControls) {
 				base.owlControls.remove();
 			}
-		},
+		};
 
-		next: function(speed) {
+		Carousel.prototype.next = function(speed) {
 			var base = this;
 
 			if (base.isTransition) {
@@ -533,9 +526,9 @@ if (typeof Object.create !== "function") {
 				}
 			}
 			base.goTo(base.currentItem, speed);
-		},
+		};
 
-		prev: function(speed) {
+		Carousel.prototype.prev = function(speed) {
 			var base = this;
 
 			if (base.isTransition) {
@@ -559,9 +552,9 @@ if (typeof Object.create !== "function") {
 				}
 			}
 			base.goTo(base.currentItem, speed);
-		},
+		};
 
-		goTo: function(position, speed, drag) {
+		Carousel.prototype.goTo = function(position, speed, drag) {
 			var base = this;
 
 			if (base.isTransition) {
@@ -624,15 +617,15 @@ if (typeof Object.create !== "function") {
 				}
 			}
 			base.afterGo();
-		},
+		};
 
-		getPrevItem: function() {
+		Carousel.prototype.getPrevItem = function() {
 			var base = this;
 			base.prevItem = base.owl.prevItem = base.storePrevItem === undefined ? base.currentItem : base.storePrevItem;
 			base.storePrevItem = undefined;
-		},
+		};
 
-		jumpTo: function(position) {
+		Carousel.prototype.jumpTo = function(position) {
 			var base = this;
 			base.getPrevItem();
 			if (typeof base.options.beforeMove === "function") {
@@ -652,9 +645,9 @@ if (typeof Object.create !== "function") {
 			}
 			base.currentItem = base.owl.currentItem = position;
 			base.afterGo();
-		},
+		};
 
-		afterGo: function() {
+		Carousel.prototype.afterGo = function() {
 			var base = this;
 			base.checkPagination();
 			base.checkNavigation();
@@ -666,22 +659,22 @@ if (typeof Object.create !== "function") {
 			if (base.options.autoPlay !== false) {
 				base.checkAp();
 			}
-		},
+		};
 
-		stop: function() {
+		Carousel.prototype.stop = function() {
 			var base = this;
 			base.apStatus = "stop";
 			clearInterval(base.autoPlayInterval);
-		},
+		};
 
-		checkAp: function() {
+		Carousel.prototype.checkAp = function() {
 			var base = this;
 			if (base.apStatus !== "stop") {
 				base.play();
 			}
-		},
+		};
 
-		play: function() {
+		Carousel.prototype.play = function() {
 			var base = this;
 			base.apStatus = "play";
 			if (base.options.autoPlay === false) {
@@ -691,9 +684,9 @@ if (typeof Object.create !== "function") {
 			base.autoPlayInterval = setInterval(function() {
 				base.next(true);
 			},base.options.autoPlay);
-		},
+		};
 
-		swapSpeed: function(action) {
+		Carousel.prototype.swapSpeed = function(action) {
 			var base = this;
 			if (action === "slideSpeed") {
 				base.$owlWrapper.css(base.addCssSpeed(base.options.slideSpeed));
@@ -702,9 +695,9 @@ if (typeof Object.create !== "function") {
 			} else if (typeof action !== "string") {
 				base.$owlWrapper.css(base.addCssSpeed(action));
 			}
-		},
+		};
 
-		addCssSpeed: function(speed) {
+		Carousel.prototype.addCssSpeed = function(speed) {
 			var base = this;
 			return {
 				"-webkit-transition": "all "+ speed +"ms ease",
@@ -712,18 +705,18 @@ if (typeof Object.create !== "function") {
 				"-o-transition": "all "+ speed +"ms ease",
 				"transition": "all "+ speed +"ms ease"
 			};
-		},
+		};
 
-		removeTransition: function() {
+		Carousel.prototype.removeTransition = function() {
 			return {
 				"-webkit-transition": "",
 				"-moz-transition": "",
 				"-o-transition": "",
 				"transition": ""
 			};
-		},
+		};
 
-		doTranslate: function(pixels) {
+		Carousel.prototype.doTranslate = function(pixels) {
 			return {
 				"-webkit-transform": "translate3d(" + pixels + "px, 0px, 0px)",
 				"-moz-transform": "translate3d(" + pixels + "px, 0px, 0px)",
@@ -731,19 +724,19 @@ if (typeof Object.create !== "function") {
 				"-ms-transform": "translate3d(" + pixels + "px, 0px, 0px)",
 				"transform": "translate3d(" + pixels + "px, 0px, 0px)"
 			};
-		},
+		};
 
-		transition3d: function(value) {
+		Carousel.prototype.transition3d = function(value) {
 			var base = this;
 			base.$owlWrapper.css(base.doTranslate(value));
-		},
+		};
 
-		css2move: function(value) {
+		Carousel.prototype.css2move = function(value) {
 			var base = this;
 			base.$owlWrapper.css({left: value});
-		},
+		};
 
-		css2slide: function(value, speed) {
+		Carousel.prototype.css2slide = function(value, speed) {
 			var base = this;
 
 			base.isCssFinish = false;
@@ -755,9 +748,9 @@ if (typeof Object.create !== "function") {
 					base.isCssFinish = true;
 				}
 			});
-		},
+		};
 
-		checkBrowser: function() {
+		Carousel.prototype.checkBrowser = function() {
 			var base = this;
 
 			//Check 3d support
@@ -779,17 +772,17 @@ if (typeof Object.create !== "function") {
 				support3d: support3d,
 				isTouch: isTouch
 			};
-		},
+		};
 
-		moveEvents: function() {
+		Carousel.prototype.moveEvents = function() {
 			var base = this;
 			if (base.options.mouseDrag !== false || base.options.touchDrag !== false) {
 				base.gestures();
 				base.disabledEvents();
 			}
-		},
+		};
 
-		eventTypes: function() {
+		Carousel.prototype.eventTypes = function() {
 			var base = this;
 			var types = ["s", "e", "x"];
 
@@ -818,9 +811,9 @@ if (typeof Object.create !== "function") {
 			base.ev_types.start = types[0];
 			base.ev_types.move = types[1];
 			base.ev_types.end = types[2];
-		},
+		};
 
-		disabledEvents: function() {
+		Carousel.prototype.disabledEvents = function() {
 			var base = this;
 			base.$elem.on("dragstart.owl", function(event) {
 				event.preventDefault();
@@ -828,9 +821,9 @@ if (typeof Object.create !== "function") {
 			base.$elem.on("mousedown.disableTextSelect", function(e) {
 				return $(e.target).is('input, textarea, select, option');
 			});
-		},
+		};
 
-		gestures: function() {
+		Carousel.prototype.gestures = function() {
 			var base = this;
 
 			var locals = {
@@ -982,9 +975,9 @@ if (typeof Object.create !== "function") {
 				swapEvents("off");
 			}
 			base.$elem.on(base.ev_types.start, ".owl-wrapper", dragStart);
-		},
+		};
 
-		getNewPosition: function() {
+		Carousel.prototype.getNewPosition = function() {
 			var base = this,
 				newPosition = base.improveClosest();
 
@@ -996,9 +989,9 @@ if (typeof Object.create !== "function") {
 				base.currentItem = 0;
 			}
 			return newPosition;
-		},
+		};
 
-		improveClosest: function() {
+		Carousel.prototype.improveClosest = function() {
 			var base = this;
 			var array = base.positionsInArray;
 			var goal = base.newPosX;
@@ -1014,9 +1007,9 @@ if (typeof Object.create !== "function") {
 				}
 			});
 			return base.currentItem;
-		},
+		};
 
-		moveDirection: function() {
+		Carousel.prototype.moveDirection = function() {
 			var base = this,
 				direction;
 			if (base.newRelativeX < 0) {
@@ -1027,9 +1020,9 @@ if (typeof Object.create !== "function") {
 				base.playDirection = "prev";
 			}
 			return direction;
-		},
+		};
 
-		customEvents: function() {
+		Carousel.prototype.customEvents = function() {
 			var base = this;
 			base.$elem.on("owl.next", function() {
 				base.next();
@@ -1052,9 +1045,9 @@ if (typeof Object.create !== "function") {
 			base.$elem.on("owl.jumpTo", function(event, item) {
 				base.jumpTo(item);
 			});
-		},
+		};
 
-		stopOnHover: function() {
+		Carousel.prototype.stopOnHover = function() {
 			var base = this;
 			if (base.options.stopOnHover === true && base.browser.isTouch !== true && base.options.autoPlay !== false) {
 				base.$elem.on("mouseover", function() {
@@ -1066,9 +1059,9 @@ if (typeof Object.create !== "function") {
 					}
 				});
 			}
-		},
+		};
 
-		lazyLoad: function() {
+		Carousel.prototype.lazyLoad = function() {
 			var base = this;
 
 			if (base.options.lazyLoad === false) {
@@ -1102,9 +1095,9 @@ if (typeof Object.create !== "function") {
 					base.lazyPreload($item,$lazyImg);
 				}
 			}
-		},
+		};
 
-		lazyPreload: function($item,$lazyImg) {
+		Carousel.prototype.lazyPreload = function($item, $lazyImg) {
 			var base = this,
 				iterations = 0;
 				$lazyImg[0].src = $lazyImg.data("src");
@@ -1129,9 +1122,9 @@ if (typeof Object.create !== "function") {
 					$lazyImg.show();
 				}
 			}
-		},
+		};
 
-		autoHeight: function() {
+		Carousel.prototype.autoHeight = function() {
 			var base = this;
 			var $currentimg = $(base.$owlItems[base.currentItem]).find("img");
 
@@ -1161,9 +1154,9 @@ if (typeof Object.create !== "function") {
 					},0);
 				}
 			}
-		},
+		};
 
-		completeImg: function(img) {
+		Carousel.prototype.completeImg = function(img) {
 			if (!img.complete) {
 				return false;
 			}
@@ -1171,24 +1164,24 @@ if (typeof Object.create !== "function") {
 				return false;
 			}
 			return true;
-		},
+		};
 
-		addClassActive: function() {
+		Carousel.prototype.addClassActive = function() {
 			var base = this;
 			base.$owlItems.removeClass("active");
 			for (var i=base.currentItem; i < base.currentItem + base.options.items; i++) {
 				$(base.$owlItems[i]).addClass("active");
 			}
-		},
+		};
 
-		transitionTypes: function(className) {
+		Carousel.prototype.transitionTypes = function(className) {
 			var base = this;
 			//Currently available: "fade", "backSlide", "goDown", "fadeUp"
 			base.outClass = "owl-" + className + "-out";
 			base.inClass = "owl-" + className + "-in";
-		},
+		};
 
-		singleItemTransition: function() {
+		Carousel.prototype.singleItemTransition = function() {
 			var base = this;
 			base.isTransition = true;
 
@@ -1231,9 +1224,9 @@ if (typeof Object.create !== "function") {
 				$currentItem.off(animEnd);
 				base.clearTransStyle($currentItem, inClass);
 			});
-		},
+		};
 
-		clearTransStyle: function(item, classToRemove) {
+		Carousel.prototype.clearTransStyle = function(item, classToRemove) {
 			var base = this;
 			item.css({
 					position: "",
@@ -1246,9 +1239,9 @@ if (typeof Object.create !== "function") {
 				base.endCurrent = false;
 				base.isTransition = false;
 			}
-		},
+		};
 
-		owlStatus: function() {
+		Carousel.prototype.owlStatus = function() {
 			var base = this;
 			base.owl = {
 				userOptions: base.userOptions,
@@ -1260,16 +1253,16 @@ if (typeof Object.create !== "function") {
 				isTouch: base.browser.isTouch,
 				browser: base.browser
 			};
-		},
+		};
 
-		clearEvents: function() {
+		Carousel.prototype.clearEvents = function() {
 			var base = this;
 			base.$elem.off(".owl owl mousedown.disableTextSelect");
 			$(document).off(".owl owl");
 			$(window).off("resize", base.resizer);
-		},
+		};
 
-		unWrap: function() {
+		Carousel.prototype.unWrap = function() {
 			var base = this;
 			if (base.$elem.children().length !== 0) {
 				base.$owlWrapper.unwrap();
@@ -1282,24 +1275,24 @@ if (typeof Object.create !== "function") {
 			base.$elem
 				.attr("style", base.$elem.data("owl-originalStyles") || "")
 				.attr("class", base.$elem.data("owl-originalClasses"));
-		},
+		};
 
-		destroy: function() {
+		Carousel.prototype.destroy = function() {
 			var base = this;
 			base.stop();
 			clearInterval(base.checkVisible);
 			base.unWrap();
 			base.$elem.removeData();
-		},
+		};
 
-		reinit: function(newOptions) {
+		Carousel.prototype.reinit = function(newOptions) {
 			var base = this;
 			var options = $.extend({}, base.userOptions, newOptions);
 			base.unWrap();
 			base.init(options, base.$elem);
-		},
+		};
 
-		addItem: function(htmlString, targetPosition) {
+		Carousel.prototype.addItem = function(htmlString, targetPosition) {
 			var base = this,
 				position;
 
@@ -1325,9 +1318,9 @@ if (typeof Object.create !== "function") {
 			}
 
 			base.setVars();
-		},
+		};
 
-		removeItem: function(targetPosition) {
+		Carousel.prototype.removeItem = function(targetPosition) {
 			var base = this,
 				position;
 
@@ -1344,9 +1337,10 @@ if (typeof Object.create !== "function") {
 			base.unWrap();
 			base.$userItems.eq(position).remove();
 			base.setVars();
-		}
+		};
 
-	};
+		return Carousel;
+	})();
 
 	$.fn.owlCarousel = function(options) {
 		return this.each(function() {
@@ -1354,8 +1348,7 @@ if (typeof Object.create !== "function") {
 				return false;
 			}
 			$(this).data("owl-init", true);
-			var carousel = Object.create(Carousel);
-			carousel.init(options, this);
+			var carousel = new Carousel(options, this);
 			$.data(this, "owlCarousel", carousel);
 		});
 	};
@@ -1368,7 +1361,7 @@ if (typeof Object.create !== "function") {
 		itemsTablet: [768, 2],
 		itemsTabletSmall: false,
 		itemsMobile: [479, 1],
-		singleItem:false,
+		singleItem: false,
 
 		slideSpeed: 200,
 		paginationSpeed: 800,
