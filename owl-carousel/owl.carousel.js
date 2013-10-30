@@ -21,12 +21,12 @@
 		Carousel.prototype.loadContent = function() {
 			var base = this;
 
-			if (typeof base.options.beforeInit === "function") {
-				base.options.beforeInit.call(this, base.$elem);
+			if (typeof this.options.beforeInit === "function") {
+				this.options.beforeInit.call(this, this.$elem);
 			}
 
-			if (typeof base.options.jsonPath === "string") {
-				$.getJSON(base.options.jsonPath).done(function(data) {
+			if (typeof this.options.jsonPath === "string") {
+				$.getJSON(this.options.jsonPath).done(function(data) {
 					if (typeof base.options.jsonSuccess === "function") {
 						base.options.jsonSuccess.call(this, data);
 					} else {
@@ -39,103 +39,96 @@
 					base.logIn();
 				});
 			} else {
-				base.logIn();
+				this.logIn();
 			}
 		};
 
 		Carousel.prototype.logIn = function(action) {
-			var base = this;
-
-			base.$elem.css({opacity: 0});
-			base.orignalItems = base.options.items;
-			base.checkBrowser();
-			base.wrapperWidth = 0;
-			// base.checkVisible;
-			base.setVars();
+			this.$elem.css({opacity: 0});
+			this.orignalItems = this.options.items;
+			this.checkBrowser();
+			this.wrapperWidth = 0;
+			// this.checkVisible;
+			this.setVars();
 		};
 
 		Carousel.prototype.setVars = function() {
-			var base = this;
-			if (base.$elem.children().length === 0) {
+			if (this.$elem.children().length === 0) {
 				return false;
 			}
-			base.baseClass();
-			base.eventTypes();
-			base.$userItems = base.$elem.children();
-			base.itemsAmount = base.$userItems.length;
-			base.wrapItems();
-			base.$owlItems = base.$elem.find(".owl-item");
-			base.$owlWrapper = base.$elem.find(".owl-wrapper");
-			base.playDirection = "next";
-			base.prevItem = 0;//base.options.startPosition;
-			base.currentItem = 0; //Starting Position
-			base.customEvents();
-			base.onStartup();
+			this.baseClass();
+			this.eventTypes();
+			this.$userItems = this.$elem.children();
+			this.itemsAmount = this.$userItems.length;
+			this.wrapItems();
+			this.$owlItems = this.$elem.find(".owl-item");
+			this.$owlWrapper = this.$elem.find(".owl-wrapper");
+			this.playDirection = "next";
+			this.prevItem = 0; //this.options.startPosition;
+			this.currentItem = 0; //Starting Position
+			this.customEvents();
+			this.onStartup();
 		};
 
 		Carousel.prototype.onStartup = function() {
-			var base = this;
-			base.updateItems();
-			base.calculateAll();
-			base.buildControls();
-			base.updateControls();
-			base.response();
-			base.moveEvents();
-			base.stopOnHover();
-			base.owlStatus();
+			this.updateItems();
+			this.calculateAll();
+			this.buildControls();
+			this.updateControls();
+			this.response();
+			this.moveEvents();
+			this.stopOnHover();
+			this.owlStatus();
 
-			if (base.options.transitionStyle !== false) {
-				base.transitionTypes(base.options.transitionStyle);
+			if (this.options.transitionStyle !== false) {
+				this.transitionTypes(this.options.transitionStyle);
 			}
-			if (base.options.autoPlay === true) {
-				base.options.autoPlay = 5000;
+			if (this.options.autoPlay === true) {
+				this.options.autoPlay = 5000;
 			}
-			base.play();
+			this.play();
 
-			base.$elem.find(".owl-wrapper").css("display", "block");
+			this.$elem.find(".owl-wrapper").css("display", "block");
 
-			if (!base.$elem.is(":visible")) {
-				base.watchVisibility();
+			if (!this.$elem.is(":visible")) {
+				this.watchVisibility();
 			} else {
-				base.$elem.css("opacity", 1);
+				this.$elem.css("opacity", 1);
 			}
-			base.onstartup = false;
-			base.eachMoveUpdate();
-			if (typeof base.options.afterInit === "function") {
-				base.options.afterInit.call(this, base.$elem);
+			this.onstartup = false;
+			this.eachMoveUpdate();
+			if (typeof this.options.afterInit === "function") {
+				this.options.afterInit.call(this, this.$elem);
 			}
 		};
 
 		Carousel.prototype.eachMoveUpdate = function() {
-			var base = this;
-
-			if (base.options.lazyLoad === true) {
-				base.lazyLoad();
+			if (this.options.lazyLoad === true) {
+				this.lazyLoad();
 			}
-			if (base.options.autoHeight === true) {
-				base.autoHeight();
+			if (this.options.autoHeight === true) {
+				this.autoHeight();
 			}
-			if (base.options.addClassActive === true) {
-				base.addClassActive();
+			if (this.options.addClassActive === true) {
+				this.addClassActive();
 			}
-			if (typeof base.options.afterAction === "function") {
-				base.options.afterAction.call(this, base.$elem);
+			if (typeof this.options.afterAction === "function") {
+				this.options.afterAction.call(this, this.$elem);
 			}
 		};
 
 		Carousel.prototype.updateVars = function() {
-			var base = this;
-			if (typeof base.options.beforeUpdate === "function") {
-				base.options.beforeUpdate.call(this, base.$elem);
+			if (typeof this.options.beforeUpdate === "function") {
+				this.options.beforeUpdate.call(this, this.$elem);
 			}
-			base.watchVisibility();
-			base.updateItems();
-			base.calculateAll();
-			base.updatePosition();
-			base.updateControls();
-			base.eachMoveUpdate();
-			if (typeof base.options.afterUpdate === "function") {
-				base.options.afterUpdate.call(this, base.$elem);
+			this.watchVisibility();
+			this.updateItems();
+			this.calculateAll();
+			this.updatePosition();
+			this.updateControls();
+			this.eachMoveUpdate();
+			if (typeof this.options.afterUpdate === "function") {
+				this.options.afterUpdate.call(this, this.$elem);
 			}
 		};
 
@@ -149,14 +142,14 @@
 		Carousel.prototype.watchVisibility = function() {
 			var base = this;
 
-			if (base.$elem.is(":visible") === false) {
-				base.$elem.css({opacity: 0});
-				clearInterval(base.autoPlayInterval);
-				clearInterval(base.checkVisible);
+			if (this.$elem.is(":visible") === false) {
+				this.$elem.css({opacity: 0});
+				clearInterval(this.autoPlayInterval);
+				clearInterval(this.checkVisible);
 			} else {
 				return false;
 			}
-			base.checkVisible = setInterval(function() {
+			this.checkVisible = setInterval(function() {
 				if (base.$elem.is(":visible")) {
 					base.reload();
 					base.$elem.animate({opacity: 1}, 200);
@@ -166,86 +159,82 @@
 		};
 
 		Carousel.prototype.wrapItems = function() {
-			var base = this;
-			base.$userItems.wrapAll("<div class=\"owl-wrapper\">").wrap("<div class=\"owl-item\"></div>");
-			base.$elem.find(".owl-wrapper").wrap("<div class=\"owl-wrapper-outer\">");
-			base.wrapperOuter = base.$elem.find(".owl-wrapper-outer");
-			base.$elem.css("display", "block");
+			this.$userItems.wrapAll("<div class=\"owl-wrapper\">").wrap("<div class=\"owl-item\"></div>");
+			this.$elem.find(".owl-wrapper").wrap("<div class=\"owl-wrapper-outer\">");
+			this.wrapperOuter = this.$elem.find(".owl-wrapper-outer");
+			this.$elem.css("display", "block");
 		};
 
 		Carousel.prototype.baseClass = function() {
-			var base = this;
-			var hasBaseClass = base.$elem.hasClass(base.options.baseClass);
-			var hasThemeClass = base.$elem.hasClass(base.options.theme);
-			base.$elem.data("owl-originalStyles", base.$elem.attr("style"))
-				.data("owl-originalClasses", base.$elem.attr("class"));
+			var hasBaseClass = this.$elem.hasClass(this.options.baseClass);
+			var hasThemeClass = this.$elem.hasClass(this.options.theme);
+			this.$elem.data("owl-originalStyles", this.$elem.attr("style"))
+				.data("owl-originalClasses", this.$elem.attr("class"));
 
 			if (!hasBaseClass) {
-				base.$elem.addClass(base.options.baseClass);
+				this.$elem.addClass(this.options.baseClass);
 			}
 
 			if (!hasThemeClass) {
-				base.$elem.addClass(base.options.theme);
+				this.$elem.addClass(this.options.theme);
 			}
 		};
 
 		Carousel.prototype.updateItems = function() {
-			var base = this;
-
-			if (base.options.responsive === false) {
+			if (this.options.responsive === false) {
 				return false;
 			}
-			if (base.options.singleItem === true) {
-				base.options.items = base.orignalItems = 1;
-				base.options.itemsDesktop = false;
-				base.options.itemsDesktopSmall = false;
-				base.options.itemsTablet = false;
-				base.options.itemsTabletSmall = false;
-				base.options.itemsMobile = false;
+			if (this.options.singleItem === true) {
+				this.options.items = this.orignalItems = 1;
+				this.options.itemsDesktop = false;
+				this.options.itemsDesktopSmall = false;
+				this.options.itemsTablet = false;
+				this.options.itemsTabletSmall = false;
+				this.options.itemsMobile = false;
 				return false;
 			}
 
-			var width = $(base.options.responsiveBaseWidth).width();
+			var width = $(this.options.responsiveBaseWidth).width();
 
-			if (width > (base.options.itemsDesktop[0] || base.orignalItems)) {
-				base.options.items = base.orignalItems;
+			if (width > (this.options.itemsDesktop[0] || this.orignalItems)) {
+				this.options.items = this.orignalItems;
 			}
 
-			if (width <= base.options.itemsDesktop[0] && base.options.itemsDesktop !== false) {
-				base.options.items = base.options.itemsDesktop[1];
+			if (width <= this.options.itemsDesktop[0] && this.options.itemsDesktop !== false) {
+				this.options.items = this.options.itemsDesktop[1];
 			}
 
-			if (width <= base.options.itemsDesktopSmall[0] && base.options.itemsDesktopSmall !== false) {
-				base.options.items = base.options.itemsDesktopSmall[1];
+			if (width <= this.options.itemsDesktopSmall[0] && this.options.itemsDesktopSmall !== false) {
+				this.options.items = this.options.itemsDesktopSmall[1];
 			}
 
-			if (width <= base.options.itemsTablet[0]  && base.options.itemsTablet !== false) {
-				base.options.items = base.options.itemsTablet[1];
+			if (width <= this.options.itemsTablet[0]  && this.options.itemsTablet !== false) {
+				this.options.items = this.options.itemsTablet[1];
 			}
 
-			if (width <= base.options.itemsTabletSmall[0]  && base.options.itemsTabletSmall !== false) {
-				base.options.items = base.options.itemsTabletSmall[1];
+			if (width <= this.options.itemsTabletSmall[0]  && this.options.itemsTabletSmall !== false) {
+				this.options.items = this.options.itemsTabletSmall[1];
 			}
 
-			if (width <= base.options.itemsMobile[0] && base.options.itemsMobile !== false) {
-				base.options.items = base.options.itemsMobile[1];
+			if (width <= this.options.itemsMobile[0] && this.options.itemsMobile !== false) {
+				this.options.items = this.options.itemsMobile[1];
 			}
 
 			//if number of items is less than declared
-			if (base.options.items > base.itemsAmount) {
-				base.options.items = base.itemsAmount;
+			if (this.options.items > this.itemsAmount) {
+				this.options.items = this.itemsAmount;
 			}
 		};
 
 		Carousel.prototype.response = function() {
 			var base = this,
 				smallDelay;
-			if (base.options.responsive !== true) {
+			if (this.options.responsive !== true) {
 				return false;
 			}
 			var lastWindowWidth = $(window).width();
 
-			base.resizer = function() {
+			this.resizer = function() {
 				if ($(window).width() !== lastWindowWidth) {
 					if (base.options.autoPlay !== false) {
 						clearInterval(base.autoPlayInterval);
@@ -257,39 +246,35 @@
 					}, base.options.responsiveRefreshRate);
 				}
 			};
-			$(window).resize(base.resizer);
+			$(window).resize(this.resizer);
 		};
 
 		Carousel.prototype.updatePosition = function() {
-			var base = this;
-
-			if (base.browser.support3d === true) {
-				if (base.positionsInArray[base.currentItem] > base.maximumPixels) {
-					base.transition3d(base.positionsInArray[base.currentItem]);
+			if (this.browser.support3d === true) {
+				if (this.positionsInArray[this.currentItem] > this.maximumPixels) {
+					this.transition3d(this.positionsInArray[this.currentItem]);
 				} else {
-					base.transition3d(0);
-					base.currentItem = 0;
+					this.transition3d(0);
+					this.currentItem = 0;
 				}
 			} else {
-				if (base.positionsInArray[base.currentItem] > base.maximumPixels) {
-					base.css2slide(base.positionsInArray[base.currentItem]);
+				if (this.positionsInArray[this.currentItem] > this.maximumPixels) {
+					this.css2slide(this.positionsInArray[this.currentItem]);
 				} else {
-					base.css2slide(0);
-					base.currentItem = 0;
+					this.css2slide(0);
+					this.currentItem = 0;
 				}
 			}
-			if (base.options.autoPlay !== false) {
-				base.checkAp();
+			if (this.options.autoPlay !== false) {
+				this.checkAp();
 			}
 		};
 
 		Carousel.prototype.appendItemsSizes = function() {
-			var base = this;
-
 			var roundPages = 0;
-			var lastItem = base.itemsAmount - base.options.items;
+			var lastItem = this.itemsAmount - this.options.items;
 
-			base.$owlItems.each(function(index) {
+			this.$owlItems.each(function(index) {
 				var $this = $(this);
 				$this.css({width: base.itemWidth})
 					.data("owl-item", Number(index));
@@ -304,35 +289,31 @@
 		};
 
 		Carousel.prototype.appendWrapperSizes = function() {
-			var base = this;
-			var width = base.$owlItems.length * base.itemWidth;
+			var width = this.$owlItems.length * this.itemWidth;
 
-			base.$owlWrapper.css({
+			this.$owlWrapper.css({
 				width: width * 2,
 				left: 0
 			});
-			base.appendItemsSizes();
+			this.appendItemsSizes();
 		};
 
 		Carousel.prototype.calculateAll = function() {
-			var base = this;
-			base.calculateWidth();
-			base.appendWrapperSizes();
-			base.loops();
-			base.max();
+			this.calculateWidth();
+			this.appendWrapperSizes();
+			this.loops();
+			this.max();
 		};
 
 		Carousel.prototype.calculateWidth = function() {
-			var base = this;
-			base.itemWidth = Math.round(base.$elem.width()/base.options.items);
+			this.itemWidth = Math.round(this.$elem.width() / this.options.items);
 		};
 
 		Carousel.prototype.max = function() {
-			var base = this;
-			base.maximumItem = base.itemsAmount - base.options.items;
-			var maximum = (base.itemsAmount * base.itemWidth) - base.options.items * base.itemWidth;
+			this.maximumItem = this.itemsAmount - this.options.items;
+			var maximum = (this.itemsAmount * this.itemWidth) - this.options.items * this.itemWidth;
 				maximum = maximum * -1;
-			base.maximumPixels = maximum;
+			this.maximumPixels = maximum;
 			return maximum;
 		};
 
