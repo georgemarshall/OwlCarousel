@@ -1,7 +1,3 @@
-/* jshint browser: true, curly: true, eqeqeq: true, es3: true, freeze: true,
- indent: 4, jquery: true, quotmark: true, undef: true, unused: true,
- trailing: true, globalstrict: true */
-
 /*
  *	jQuery OwlCarousel v1.28
  *
