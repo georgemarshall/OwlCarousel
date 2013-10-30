@@ -1,5 +1,5 @@
 /*
- *	jQuery OwlCarousel v1.27
+ *	jQuery OwlCarousel v1.28
  *
  *	Copyright (c) 2013 Bartosz Wojciechowski
  *	http://www.owlgraphic.com/owlcarousel/
@@ -13,7 +13,10 @@
 	var Carousel = (function() {
 		function Carousel(options, el) {
 			this.$elem = $(el);
-			this.options = $.extend({}, $.fn.owlCarousel.options, options);
+			
+			// options passed via js override options passed via data attributes
+			this.options = $.extend({}, $.fn.owlCarousel.options, this.$elem.data() ,options);
+
 			this.userOptions = options;
 			this.loadContent();
 		}
@@ -221,7 +224,7 @@
 			}
 
 			//if number of items is less than declared
-			if (this.options.items > this.itemsAmount) {
+			if (this.options.items > this.itemsAmount && this.options.itemsScaleUp === true) {
 				this.options.items = this.itemsAmount;
 			}
 		};
@@ -311,9 +314,15 @@
 
 		Carousel.prototype.max = function() {
 			this.maximumItem = this.itemsAmount - this.options.items;
-			var maximum = (this.itemsAmount * this.itemWidth) - this.options.items * this.itemWidth;
-				maximum = maximum * -1;
-			this.maximumPixels = maximum;
+			var maximum = ((this.itemsAmount * this.itemWidth) - this.options.items * this.itemWidth) * -1;
+			if (this.options.items > this.itemsAmount) {
+				maximum = 0;
+				this.maximumItem = 0;
+				this.maximumPixels = 0;
+			} else {
+				this.maximumItem = this.itemsAmount - this.options.items;
+				this.maximumPixels = maximum;
+			}
 			return maximum;
 		};
 
@@ -467,7 +476,7 @@
 			base.updatePagination();
 			base.checkNavigation();
 			if (base.owlControls) {
-				if (base.options.items === base.itemsAmount) {
+				if (base.options.items >= base.itemsAmount) {
 					base.owlControls.hide();
 				} else {
 					base.owlControls.show();
@@ -1338,6 +1347,7 @@
 		itemsTabletSmall: false,
 		itemsMobile: [479, 1],
 		singleItem: false,
+		itemsScaleUp: false,
 
 		slideSpeed: 200,
 		paginationSpeed: 800,
