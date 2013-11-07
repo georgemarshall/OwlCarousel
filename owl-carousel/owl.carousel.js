@@ -56,13 +56,15 @@
 		};
 
 		Carousel.prototype.setVars = function() {
-			if (this.$elem.children().length === 0) {
-				return false;
-			}
-			this.baseClass();
-			this.eventTypes();
 			this.$userItems = this.$elem.children();
 			this.itemsAmount = this.$userItems.length;
+
+			if (this.itemsAmount === 0) {
+				return false;
+			}
+
+			this.baseClass();
+			this.eventTypes();
 			this.wrapItems();
 			this.$owlItems = this.$elem.find(".owl-item");
 			this.$owlWrapper = this.$elem.find(".owl-wrapper");
