@@ -792,27 +792,6 @@
 
 			this.isCssFinish = true;
 
-			function getTouches(event) {
-				if (event.touches) {
-					return {
-						x: event.touches[0].pageX,
-						y: event.touches[0].pageY
-					};
-				} else {
-					if (event.pageX !== undefined) {
-						return {
-							x: event.pageX,
-							y: event.pageY
-						};
-					} else {
-						return {
-							x: event.clientX,
-							y: event.clientY
-						};
-					}
-				}
-			}
-
 			function swapEvents(type) {
 				if (type === "on") {
 					$(document).on(base.ev_types.move, dragMove);
@@ -823,8 +802,8 @@
 				}
 			}
 
-			function dragStart(e) { /* jshint validthis: true */
-				var event = e.originalEvent || e || window.event;
+			function dragStart(event) { /* jshint validthis: true */
+				var data = event.originalEvent.touches ? event.originalEvent.touches[0] : event;
 
 				if (base.isCssFinish === false && !base.options.dragBeforeAnimFinish) {
 					return false;
@@ -849,20 +828,20 @@
 				var position = $(this).position();
 				locals.relativePos = position.left;
 
-				locals.offsetX = getTouches(event).x - position.left;
-				locals.offsetY = getTouches(event).y - position.top;
+				locals.offsetX = data.pageX - position.left;
+				locals.offsetY = data.pageY - position.top;
 
 				swapEvents("on");
 
 				locals.sliding = false;
-				locals.targetElement = event.target || event.srcElement;
+				locals.targetElement = event.target;
 			}
 
-			function dragMove(e) { /* jshint validthis: true */
-				var event = e.originalEvent || e || window.event;
+			function dragMove(event) { /* jshint validthis: true */
+				var data = event.originalEvent.touches ? event.originalEvent.touches[0] : event;
 
-				base.newPosX = getTouches(event).x- locals.offsetX;
-				base.newPosY = getTouches(event).y - locals.offsetY;
+				base.newPosX = data.pageX - locals.offsetX;
+				base.newPosY = data.pageY - locals.offsetY;
 				base.newRelativeX = base.newPosX - locals.relativePos;
 
 				if (typeof base.options.startDragging === "function" && locals.dragging !== true && base.newRelativeX !== 0) {
@@ -871,11 +850,7 @@
 				}
 
 				if (base.newRelativeX > 8 || base.newRelativeX < -8 && base.browser.isTouch === true) {
-					if (event.preventDefault) {
-						event.preventDefault();
-					} else {
-						event.returnValue = false;
-					}
+					event.preventDefault();
 					locals.sliding = true;
 				}
 
@@ -898,10 +873,7 @@
 				}
 			}
 
-			function dragEnd(e) {
-				var event = e.originalEvent || e || window.event;
-				event.target = event.target || event.srcElement;
-
+			function dragEnd(event) {
 				locals.dragging = false;
 
 				if (base.browser.isTouch !== true) {
@@ -918,9 +890,6 @@
 							ev.preventDefault();
 							$(event.target).off("click.disable");
 						});
-						var handlers = $._data(event.target, "events").click;
-						var owlStopEvent = handlers.pop();
-						handlers.splice(0, 0, owlStopEvent);
 					}
 				}
 				swapEvents("off");
