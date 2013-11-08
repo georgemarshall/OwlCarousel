@@ -405,16 +405,40 @@
 
 			this.paginationWrapper.html("");
 
-			var pages = Math.ceil(this.itemsAmount / this.options.items);
+			var attributes = function() {return {};},
+				pages = Math.ceil(this.itemsAmount / this.options.items);
+
+			// Change our attributes function based upon settings
+			if (this.options.paginationNumbers === true) {
+				attributes = function(index) {
+					return {
+						"text": index + 1,
+						"class": "owl-numbers"
+					};
+				};
+			}
+			if (this.options.paginationTitles === true && this.options.singleItem === true) {
+				var titleList = [];
+
+				// Grab all the titles
+				this.$userItems.each(function() {
+					var title = $(this).data("title");
+					titleList.push(title || "");
+				});
+
+				attributes = function(index) {
+					return {
+						"text": titleList[index],
+						"class": "owl-titles"
+					};
+				};
+			}
 
 			for (var i=0; i < pages; i++) {
 				var paginationButton = $("<div/>", {
 					"class": "owl-page"
 				});
-				var paginationButtonInner = $("<span></span>", {
-					"text": this.options.paginationNumbers === true ? i + 1 : "",
-					"class": this.options.paginationNumbers === true ? "owl-numbers" : ""
-				});
+				var paginationButtonInner = $("<span></span>", attributes.call(this, i));
 				paginationButton.append(paginationButtonInner);
 
 				paginationButton.data("owl-page", i * this.options.items);
@@ -1319,6 +1343,7 @@
 
 		pagination: true,
 		paginationNumbers: false,
+		paginationTitles: false,
 
 		responsive: true,
 		responsiveRefreshRate: 200,

@@ -61,7 +61,8 @@
 
 /* If PaginationNumbers is true */
 
-.owl-theme .owl-controls .owl-page span.owl-numbers{
+.owl-theme .owl-controls .owl-page span.owl-numbers,
+.owl-theme .owl-controls .owl-page span.owl-titles{
 	height: auto;
 	width: auto;
 	color: #FFF;
