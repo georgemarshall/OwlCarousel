@@ -738,33 +738,31 @@
 		};
 
 		Carousel.prototype.eventTypes = function() {
-			var types = ["s", "e", "x"];
-
-			this.ev_types = {};
-
 			if (this.options.mouseDrag === true && this.options.touchDrag === true) {
-				types = [
-					"touchstart.owl mousedown.owl",
-					"touchmove.owl mousemove.owl",
-					"touchend.owl touchcancel.owl mouseup.owl"
-				];
+				this.ev_types = {
+					start: "touchstart.owl mousedown.owl",
+					move: "touchmove.owl mousemove.owl",
+					end: "touchend.owl touchcancel.owl mouseup.owl"
+				};
 			} else if (this.options.mouseDrag === false && this.options.touchDrag === true) {
-				types = [
-					"touchstart.owl",
-					"touchmove.owl",
-					"touchend.owl touchcancel.owl"
-				];
+				this.ev_types = {
+					start: "touchstart.owl",
+					move: "touchmove.owl",
+					end: "touchend.owl touchcancel.owl"
+				};
 			} else if (this.options.mouseDrag === true && this.options.touchDrag === false) {
-				types = [
-					"mousedown.owl",
-					"mousemove.owl",
-					"mouseup.owl"
-				];
+				this.ev_types = {
+					start: "mousedown.owl",
+					move: "mousemove.owl",
+					end: "mouseup.owl"
+				};
+			} else {
+				this.ev_types = {
+					start: "s",
+					move: "e",
+					end: "x"
+				};
 			}
-
-			this.ev_types.start = types[0];
-			this.ev_types.move = types[1];
-			this.ev_types.end = types[2];
 		};
 
 		Carousel.prototype.disabledEvents = function() {
