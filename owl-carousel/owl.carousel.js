@@ -405,33 +405,26 @@
 
 			this.paginationWrapper.html("");
 
-			var counter = 0,
-				lastItem,
-				lastPage = this.itemsAmount - this.itemsAmount % this.options.items;
+			var pages = Math.ceil(this.itemsAmount / this.options.items);
 
-			for (var i=0; i < this.itemsAmount; i++) {
-				if (i % this.options.items === 0) {
-					counter += 1;
-					if (lastPage === i) {
-						lastItem = this.itemsAmount - this.options.items;
-					}
-					var paginationButton = $("<div/>", {
-						"class": "owl-page"
-					});
-					var paginationButtonInner = $("<span></span>", {
-						"text": this.options.paginationNumbers === true ? counter : "",
-						"class": this.options.paginationNumbers === true ? "owl-numbers" : ""
-					});
-					paginationButton.append(paginationButtonInner);
+			for (var i=0; i < pages; i++) {
+				var paginationButton = $("<div/>", {
+					"class": "owl-page"
+				});
+				var paginationButtonInner = $("<span></span>", {
+					"text": this.options.paginationNumbers === true ? i + 1 : "",
+					"class": this.options.paginationNumbers === true ? "owl-numbers" : ""
+				});
+				paginationButton.append(paginationButtonInner);
 
-					paginationButton.data("owl-page", lastPage === i ? lastItem : i);
-					paginationButton.data("owl-roundPages", counter);
+				paginationButton.data("owl-page", i * this.options.items);
+				paginationButton.data("owl-roundPages", i + 1);
 
-					this.paginationWrapper.append(paginationButton);
-				}
+				this.paginationWrapper.append(paginationButton);
 			}
 			this.checkPagination();
 		};
+
 		Carousel.prototype.checkPagination = function() {
 			var base = this;
 			if (this.options.pagination === false) {
