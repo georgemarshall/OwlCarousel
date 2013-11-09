@@ -1152,17 +1152,21 @@
 			.css(transStyles(prevPos, 10))
 			.addClass(outClass)
 			.on(animEnd, function() {
-				base.endPrev = true;
-				$prevItem.off(animEnd);
-				base.clearTransStyle($prevItem, outClass);
+				if (event.target === $currentItem.get(0)) {
+					base.endPrev = true;
+					$prevItem.off(animEnd);
+					base.clearTransStyle($prevItem, outClass);
+				}
 			});
 
 			$currentItem
 			.addClass(inClass)
 			.on(animEnd, function() {
-				base.endCurrent = true;
-				$currentItem.off(animEnd);
-				base.clearTransStyle($currentItem, inClass);
+				if (event.target === $currentItem.get(0)) {
+					base.endCurrent = true;
+					$currentItem.off(animEnd);
+					base.clearTransStyle($currentItem, inClass);
+				}
 			});
 		};
 
