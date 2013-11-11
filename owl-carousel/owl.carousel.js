@@ -1128,7 +1128,7 @@
 			.css(transStyles(prevPos, 10))
 			.addClass(outClass)
 			.on(animEnd, function() {
-				if (event.target === $currentItem.get(0)) {
+				if (this === event.target) {
 					base.endPrev = true;
 					$prevItem.off(animEnd);
 					base.clearTransStyle($prevItem, outClass);
@@ -1138,7 +1138,7 @@
 			$currentItem
 			.addClass(inClass)
 			.on(animEnd, function() {
-				if (event.target === $currentItem.get(0)) {
+				if (this === event.target) {
 					base.endCurrent = true;
 					$currentItem.off(animEnd);
 					base.clearTransStyle($currentItem, inClass);
