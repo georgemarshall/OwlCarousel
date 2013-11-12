@@ -1,3 +1,4 @@
+/* globals Modernizr */
 /*!
  *	jQuery OwlCarousel v1.28
  *
@@ -8,7 +9,7 @@
  *
  */
 "use strict";
-(function($, undefined) {
+(function($, Modernizr, undefined) {
 
 	var Carousel = (function() {
 		function Carousel(options, el) {
@@ -49,7 +50,6 @@
 		Carousel.prototype.logIn = function() {
 			this.$elem.css({opacity: 0});
 			this.orignalItems = this.options.items;
-			this.checkBrowser();
 			this.wrapperWidth = 0;
 			// this.checkVisible;
 			this.setVars();
@@ -255,7 +255,7 @@
 		};
 
 		Carousel.prototype.updatePosition = function() {
-			if (this.browser.support3d === true) {
+			if (Modernizr.csstransforms3d === true) {
 				if (this.positionsInArray[this.currentItem] > this.maximumPixels) {
 					this.transition3d(this.positionsInArray[this.currentItem]);
 				} else {
@@ -345,7 +345,7 @@
 
 		Carousel.prototype.buildControls = function() {
 			if (this.options.navigation === true || this.options.pagination === true) {
-				this.owlControls = $("<div class=\"owl-controls\"/>").toggleClass("clickable", !this.browser.isTouch).appendTo(this.$elem);
+				this.owlControls = $("<div class=\"owl-controls\"/>").toggleClass("clickable", !Modernizr.touch).appendTo(this.$elem);
 			}
 			if (this.options.pagination === true) {
 				this.buildPagination();
@@ -541,9 +541,9 @@
 			}
 
 			this.currentItem = this.owl.currentItem = position;
-			if (this.options.transitionStyle !== false && drag !== "drag" && this.options.items === 1 && this.browser.support3d === true) {
+			if (this.options.transitionStyle !== false && drag !== "drag" && this.options.items === 1 && Modernizr.csstransforms3d === true) {
 				this.swapSpeed(0);
-				if (this.browser.support3d === true) {
+				if (Modernizr.csstransforms3d === true) {
 					this.transition3d(this.positionsInArray[position]);
 				} else {
 					this.css2slide(this.positionsInArray[position], 1);
@@ -554,7 +554,7 @@
 			}
 			var goToPixel = this.positionsInArray[position];
 
-			if (this.browser.support3d === true) {
+			if (Modernizr.csstransforms3d === true) {
 				this.isCss3Finish = false;
 
 				if (speed === true) {
@@ -603,7 +603,7 @@
 				position = 0;
 			}
 			this.swapSpeed(0);
-			if (this.browser.support3d === true) {
+			if (Modernizr.csstransforms3d === true) {
 				this.transition3d(this.positionsInArray[position]);
 			} else {
 				this.css2slide(this.positionsInArray[position], 1);
@@ -708,28 +708,6 @@
 			});
 		};
 
-		Carousel.prototype.checkBrowser = function() {
-			//Check 3d support
-			var	translate3D = "translate3d(0px, 0px, 0px)",
-				tempElem = document.createElement("div");
-
-			tempElem.style.cssText = " -moz-transform:"    + translate3D +
-									"; -ms-transform:"     + translate3D +
-									"; -o-transform:"      + translate3D +
-									"; -webkit-transform:" + translate3D +
-									"; transform:"         + translate3D;
-			var	regex = /translate3d\(0px, 0px, 0px\)/g,
-				asSupport = tempElem.style.cssText.match(regex),
-				support3d = (asSupport !== null && asSupport.length === 1);
-
-			var isTouch = "ontouchstart" in window || navigator.msMaxTouchPoints;
-
-			this.browser = {
-				support3d: support3d,
-				isTouch: isTouch
-			};
-		};
-
 		Carousel.prototype.moveEvents = function() {
 			if (this.options.mouseDrag !== false || this.options.touchDrag !== false) {
 				this.gestures();
@@ -816,7 +794,7 @@
 					clearInterval(base.autoPlayInterval);
 				}
 
-				if (base.browser.isTouch !== true && !base.$owlWrapper.hasClass("grabbing")) {
+				if (Modernizr.touch !== true && !base.$owlWrapper.hasClass("grabbing")) {
 					base.$owlWrapper.addClass("grabbing");
 				}
 
@@ -849,7 +827,7 @@
 					base.options.startDragging.call(this);
 				}
 
-				if (base.newRelativeX > 8 || base.newRelativeX < -8 && base.browser.isTouch === true) {
+				if (base.newRelativeX > 8 || base.newRelativeX < -8 && Modernizr.touch === true) {
 					event.preventDefault();
 					locals.sliding = true;
 				}
@@ -866,7 +844,7 @@
 				};
 
 				base.newPosX = Math.max(Math.min(base.newPosX, minSwipe()), maxSwipe());
-				if (base.browser.support3d === true) {
+				if (Modernizr.csstransforms3d === true) {
 					base.transition3d(base.newPosX);
 				} else {
 					base.css2move(base.newPosX);
@@ -876,14 +854,14 @@
 			function dragEnd(event) {
 				locals.dragging = false;
 
-				if (base.browser.isTouch !== true) {
+				if (Modernizr.touch !== true) {
 					base.$owlWrapper.removeClass("grabbing");
 				}
 
 				if (base.newRelativeX !== 0) {
 					var newPosition = base.getNewPosition();
 					base.goTo(newPosition, false, "drag");
-					if (locals.targetElement === event.target && base.browser.isTouch !== true) {
+					if (locals.targetElement === event.target && Modernizr.touch !== true) {
 						$(event.target).on("click.disable", function(ev) {
 							ev.stopImmediatePropagation();
 							ev.stopPropagation();
@@ -967,7 +945,7 @@
 
 		Carousel.prototype.stopOnHover = function() {
 			var base = this;
-			if (this.options.stopOnHover === true && this.browser.isTouch !== true && this.options.autoPlay !== false) {
+			if (this.options.stopOnHover === true && Modernizr.touch !== true && this.options.autoPlay !== false) {
 				this.$elem.on("mouseover", function() {
 					base.stop();
 				});
@@ -1127,7 +1105,7 @@
 			$prevItem
 			.css(transStyles(prevPos, 10))
 			.addClass(outClass)
-			.on(animEnd, function() {
+			.on(animEnd, function(event) {
 				if (this === event.target) {
 					base.endPrev = true;
 					$prevItem.off(animEnd);
@@ -1137,7 +1115,7 @@
 
 			$currentItem
 			.addClass(inClass)
-			.on(animEnd, function() {
+			.on(animEnd, function(event) {
 				if (this === event.target) {
 					base.endCurrent = true;
 					$currentItem.off(animEnd);
@@ -1167,9 +1145,7 @@
 				userItems: this.$userItems,
 				owlItems: this.$owlItems,
 				currentItem: this.currentItem,
-				prevItem: this.prevItem,
-				isTouch: this.browser.isTouch,
-				browser: this.browser
+				prevItem: this.prevItem
 			};
 		};
 
@@ -1324,4 +1300,4 @@
 		startDragging: false
 
 	};
-})(jQuery);
+})(jQuery, Modernizr);
