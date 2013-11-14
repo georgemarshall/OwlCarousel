@@ -1,6 +1,6 @@
 /* globals Modernizr */
 /*!
- *	jQuery OwlCarousel v1.28
+ *	jQuery OwlCarousel v1.29
  *
  *	Copyright (c) 2013 Bartosz Wojciechowski
  *	http://www.owlgraphic.com/owlcarousel/
@@ -114,9 +114,8 @@
 			if (this.options.autoHeight === true) {
 				this.autoHeight();
 			}
-			if (this.options.addClassActive === true) {
-				this.addClassActive();
-			}
+			this.onVisibleItems();
+
 			if (typeof this.options.afterAction === "function") {
 				this.options.afterAction.call(this, this.$elem);
 			}
@@ -373,6 +372,10 @@
 			buttonsWrapper
 			.append(this.buttonPrev)
 			.append(this.buttonNext);
+
+			buttonsWrapper.on("touchstart.owlControls mousedown.owlControls", "div[class^=\"owl\"]", function(event) {
+				event.preventDefault();
+			});
 
 			buttonsWrapper.on("touchend.owlControls mouseup.owlControls", "div[class^=\"owl\"]", function(event) {
 				event.preventDefault();
@@ -807,6 +810,9 @@
 			function dragStart(event) { /* jshint validthis: true */
 				var data = event.originalEvent.touches ? event.originalEvent.touches[0] : event;
 
+				if (event.which === 3) {
+					return false;
+				}
 				if (base.isCssFinish === false && !base.options.dragBeforeAnimFinish) {
 					return false;
 				}
@@ -1085,11 +1091,19 @@
 			return true;
 		};
 
-		Carousel.prototype.addClassActive = function() {
-			this.$owlItems.removeClass("active");
-			for (var i=this.currentItem; i < this.currentItem + this.options.items; i++) {
-				$(this.$owlItems[i]).addClass("active");
+		Carousel.prototype.onVisibleItems = function() {
+			if(this.options.addClassActive === true) {
+				this.$owlItems.removeClass("active");
 			}
+			this.visibleItems = [];
+			for (var i=this.currentItem; i < this.currentItem + this.options.items; i++) {
+				this.visibleItems.push(i);
+
+				if(this.options.addClassActive === true){
+					$(this.$owlItems[i]).addClass("active");
+				}
+			}
+			this.owl.visibleItems = this.visibleItems;
 		};
 
 		Carousel.prototype.transitionTypes = function(className) {
@@ -1165,11 +1179,12 @@
 		Carousel.prototype.owlStatus = function() {
 			this.owl = {
 				userOptions: this.userOptions,
-				thisElement: this.$elem,
+				baseElement: this.$elem,
 				userItems: this.$userItems,
 				owlItems: this.$owlItems,
 				currentItem: this.currentItem,
-				prevItem: this.prevItem
+				prevItem: this.prevItem,
+				visibleItems: this.visibleItems
 			};
 		};
 
