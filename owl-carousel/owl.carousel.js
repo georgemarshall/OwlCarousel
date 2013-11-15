@@ -1038,13 +1038,16 @@
 					showImage();
 				}
 			}
-			function showImage() {
+			function showImage() { /* jshint validthis: true */
 				$item.data("owl-loaded", "loaded").removeClass("loading");
 				$lazyImg.removeAttr("data-src");
 				if (base.options.lazyEffect === "fade") {
 					$lazyImg.fadeIn(400);
 				} else {
 					$lazyImg.show();
+				}
+				if (typeof base.options.afterLazyLoad === "function") {
+					base.options.afterLazyLoad.call(this, base.$elem);
 				}
 			}
 		};
@@ -1337,7 +1340,8 @@
 		beforeMove: false,
 		afterMove: false,
 		afterAction: false,
-		startDragging: false
+		startDragging: false,
+		afterLazyLoad: false
 
 	};
 })(jQuery, Modernizr);
